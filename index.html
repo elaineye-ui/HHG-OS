@@ -1,0 +1,2487 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HHG Company OS</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        hhg: {
+                            50: '#fff8e1',
+                            100: '#ffecb3',
+                            200: '#ffe082',
+                            300: '#ffd54f',
+                            400: '#ffca28',
+                            500: '#ffc107', // Base Yellow/Orange
+                            600: '#ffb300',
+                            700: '#ffa000',
+                            800: '#ff8f00',
+                            900: '#ff6f00',
+                        },
+                        gray: {
+                            50: '#f9fafb',
+                            100: '#f3f4f6', // Light gray background
+                            800: '#1f2937', // Dark text
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-sans antialiased overflow-hidden h-screen flex">
+
+    <!-- Sidebar Navigation -->
+    <aside id="sidebar"
+        class="w-64 bg-white border-r border-gray-200 flex flex-col transition-all duration-300 h-full z-20">
+        <!-- Logo Area -->
+        <div class="h-16 flex items-center px-6 border-b border-gray-100">
+            <div class="flex items-center gap-2">
+                <div
+                    class="w-8 h-8 bg-hhg-500 rounded-lg flex items-center justify-center text-white font-bold shadow-sm">
+                    H
+                </div>
+                <span class="font-bold text-lg tracking-tight">HHG OS</span>
+            </div>
+            <button id="toggleSidebar" class="ml-auto text-gray-400 hover:text-gray-600 lg:hidden">
+                <i data-lucide="chevrons-left"></i>
+            </button>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1 custom-scrollbar">
+
+            <!-- 1. Dashboard -->
+            <div>
+                <button onclick="toggleMenu('menu-dashboard', this)"
+                    class="w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-hhg-50 hover:text-hhg-900 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                        <span class="truncate">業績儀表板</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 submenu-arrow"></i>
+                </button>
+                <ul id="menu-dashboard" class="hidden pl-11 mt-1 space-y-1">
+                    <li><a href="#" onclick="switchPage('dashboard-overview', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">全集團概況</a>
+                    </li>
+                    <li><a href="#" onclick="switchPage('dashboard-channel', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">通路細節</a>
+                    </li>
+                    <li><a href="#" onclick="switchPage('dashboard-report', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">報表中心</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 2. Competitor -->
+            <div>
+                <button onclick="toggleMenu('menu-competitor', this)"
+                    class="w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-hhg-50 hover:text-hhg-900 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="glasses" class="w-5 h-5"></i>
+                        <span class="truncate">競品追蹤區</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 submenu-arrow"></i>
+                </button>
+                <ul id="menu-competitor" class="hidden pl-11 mt-1 space-y-1">
+                    <li><a href="#" onclick="switchPage('competitor', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">價格監測列表</a>
+                    </li>
+                    <li><a href="#" onclick="switchPage('competitor', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">競品活動時間軸</a>
+                    </li>
+                    <li><a href="#" onclick="switchPage('competitor', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">分析報告</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 3. Ecommerce -->
+            <div>
+                <button onclick="toggleMenu('menu-ecommerce', this)"
+                    class="w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-hhg-50 hover:text-hhg-900 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                        <span class="truncate">電商營運中心</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 submenu-arrow"></i>
+                </button>
+                <ul id="menu-ecommerce" class="hidden pl-11 mt-1 space-y-1">
+                    <li><a href="#" onclick="switchPage('ecommerce', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">商品管理</a>
+                    </li>
+                    <li><a href="#" onclick="switchPage('ecommerce', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">AI
+                            文案生成</a></li>
+                    <li><a href="#" onclick="switchPage('ecommerce', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">活動提報</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 4. Work -->
+            <div>
+                <button onclick="toggleMenu('menu-work', this)"
+                    class="w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-hhg-50 hover:text-hhg-900 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="check-square" class="w-5 h-5"></i>
+                        <span class="truncate">工作管理中心</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 submenu-arrow"></i>
+                </button>
+                <ul id="menu-work" class="hidden pl-11 mt-1 space-y-1">
+                    <li><a href="#" onclick="switchPage('work', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">我的任務</a>
+                    </li>
+                    <li><a href="#" onclick="switchPage('work', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">專案看板</a>
+                    </li>
+                    <li><a href="#" onclick="switchPage('work', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">會議記錄</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 5. Knowledge -->
+            <div>
+                <button onclick="toggleMenu('menu-knowledge', this)"
+                    class="w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-hhg-50 hover:text-hhg-900 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="book" class="w-5 h-5"></i>
+                        <span class="truncate">知識庫與文件</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 submenu-arrow"></i>
+                </button>
+                <ul id="menu-knowledge" class="hidden pl-11 mt-1 space-y-1">
+                    <li><a href="#" onclick="switchPage('knowledge-base', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">部門知識庫</a>
+                    </li>
+                    <li><a href="#" onclick="switchPage('knowledge-repo', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">文件倉庫</a>
+                    </li>
+                    <li><a href="#" onclick="switchPage('knowledge-templates', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">範本中心</a>
+                    </li>
+                    <li><a href="#" onclick="switchPage('knowledge-feedback', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">查無依據回報</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 6. Approval -->
+            <div>
+                <button onclick="toggleMenu('menu-approval', this)"
+                    class="w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-hhg-50 hover:text-hhg-900 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="file-signature" class="w-5 h-5"></i>
+                        <span class="truncate">簽核中心</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 submenu-arrow"></i>
+                </button>
+                <ul id="menu-approval" class="hidden pl-11 mt-1 space-y-1">
+                    <li><a href="#" onclick="switchPage('approval', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">待簽核文件</a>
+                    </li>
+                    <li><a href="#" onclick="switchPage('approval', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">已處理文件</a>
+                    </li>
+                    <li><a href="#" onclick="switchPage('approval', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">發起新申請</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 7. Logistics -->
+            <div>
+                <button onclick="toggleMenu('menu-logistics', this)"
+                    class="w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-hhg-50 hover:text-hhg-900 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="truck" class="w-5 h-5"></i>
+                        <span class="truncate">物流與客服</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 submenu-arrow"></i>
+                </button>
+                <ul id="menu-logistics" class="hidden pl-11 mt-1 space-y-1">
+                    <li><a href="#" onclick="switchPage('logistics', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">訂單出貨監控</a>
+                    </li>
+                    <li><a href="#" onclick="switchPage('logistics', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">庫存管理</a>
+                    </li>
+                    <li><a href="#" onclick="switchPage('logistics', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">客服工單</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 8. Design -->
+            <div>
+                <button onclick="toggleMenu('menu-design', this)"
+                    class="w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-hhg-50 hover:text-hhg-900 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="palette" class="w-5 h-5"></i>
+                        <span class="truncate">設計部專區</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 submenu-arrow"></i>
+                </button>
+                <ul id="menu-design" class="hidden pl-11 mt-1 space-y-1">
+                    <li><a href="#" onclick="switchPage('design', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">設計需求單</a>
+                    </li>
+                    <li><a href="#" onclick="switchPage('design', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">素材資產庫</a>
+                    </li>
+                    <li><a href="#" onclick="switchPage('design', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">品牌規範</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 9. Media -->
+            <div>
+                <button onclick="toggleMenu('menu-media', this)"
+                    class="w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-hhg-50 hover:text-hhg-900 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="megaphone" class="w-5 h-5"></i>
+                        <span class="truncate">媒體部專區</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 submenu-arrow"></i>
+                </button>
+                <ul id="menu-media" class="hidden pl-11 mt-1 space-y-1">
+                    <li><a href="#" onclick="switchPage('media', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">廣告投放概覽</a>
+                    </li>
+                    <li><a href="#" onclick="switchPage('media', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">預算管理</a>
+                    </li>
+                    <li><a href="#" onclick="switchPage('media', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">成效報表</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 10. Finance -->
+            <div>
+                <button onclick="toggleMenu('menu-finance', this)"
+                    class="w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-hhg-50 hover:text-hhg-900 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="banknote" class="w-5 h-5"></i>
+                        <span class="truncate">財務部專區</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 submenu-arrow"></i>
+                </button>
+                <ul id="menu-finance" class="hidden pl-11 mt-1 space-y-1">
+                    <li><a href="#" onclick="switchPage('finance', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">營收損益表</a>
+                    </li>
+                    <li><a href="#" onclick="switchPage('finance', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">對帳單管理</a>
+                    </li>
+                    <li><a href="#" onclick="switchPage('finance', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">費用請款</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 11. Management -->
+            <div>
+                <button onclick="toggleMenu('menu-management', this)"
+                    class="w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-hhg-50 hover:text-hhg-900 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+                        <span class="truncate">經營管理專區</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 submenu-arrow"></i>
+                </button>
+                <ul id="menu-management" class="hidden pl-11 mt-1 space-y-1">
+                    <li><a href="#" onclick="switchPage('management', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">營運戰情室</a>
+                    </li>
+                    <li><a href="#" onclick="switchPage('management', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">目標管理
+                            (OKR)</a></li>
+                    <li><a href="#" onclick="switchPage('management', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">人力資源</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 12. Notifications -->
+            <div>
+                <button onclick="toggleMenu('menu-notifications', this)"
+                    class="w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-hhg-50 hover:text-hhg-900 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        <span class="truncate">通知中心</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 submenu-arrow"></i>
+                </button>
+                <ul id="menu-notifications" class="hidden pl-11 mt-1 space-y-1">
+                    <li><a href="#" onclick="switchPage('notifications', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">全部通知</a>
+                    </li>
+                    <li><a href="#" onclick="switchPage('notifications', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">未讀通知</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 13. Settings -->
+            <div>
+                <button onclick="toggleMenu('menu-settings', this)"
+                    class="w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-hhg-50 hover:text-hhg-900 transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="settings" class="w-5 h-5"></i>
+                        <span class="truncate">使用者與權限</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 submenu-arrow"></i>
+                </button>
+                <ul id="menu-settings" class="hidden pl-11 mt-1 space-y-1">
+                    <li><a href="#" onclick="switchPage('settings', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">個人設定</a>
+                    </li>
+                    <li><a href="#" onclick="switchPage('settings', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">使用者管理</a>
+                    </li>
+                    <li><a href="#" onclick="switchPage('settings', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">系統參數</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- User Profile (Bottom Sidebar) -->
+        <div class="p-4 border-t border-gray-100">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+                    <i data-lucide="user" class="w-5 h-5"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-gray-900 truncate">Admin User</p>
+                    <p class="text-xs text-gray-500 truncate" id="currentRole">Role: Manager</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col h-full relative overflow-hidden">
+
+        <!-- Top Bar -->
+        <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 z-10 shrink-0">
+            <!-- Left: Page Title / Breadcrumbs -->
+            <div class="flex items-center gap-4">
+                <button id="mobileSidebarToggle" class="lg:hidden text-gray-500">
+                    <i data-lucide="menu"></i>
+                </button>
+                <h1 id="pageTitle" class="text-xl font-bold text-gray-800">業績儀表板</h1>
+            </div>
+
+            <!-- Center: AI Search -->
+            <div class="flex-1 max-w-xl mx-4 relative hidden md:block">
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                        <i data-lucide="search" class="w-5 h-5 text-gray-400"></i>
+                    </span>
+                    <input type="text"
+                        class="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-50 border-none focus:ring-2 focus:ring-hhg-500 focus:bg-white transition-all text-sm"
+                        placeholder="AI 搜尋：文件 / 專案 / 任務 / 指標...">
+                </div>
+            </div>
+
+            <!-- Right: Actions -->
+            <div class="flex items-center gap-4">
+                <!-- Role Switcher -->
+                <div class="relative group">
+                    <button
+                        class="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-gray-900 bg-gray-50 px-3 py-1.5 rounded-lg border border-transparent hover:border-gray-200 transition-all">
+                        <i data-lucide="users" class="w-4 h-4"></i>
+                        <span id="roleDisplay">經管視角</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                    </button>
+                    <!-- Dropdown Content (Simple Hover for MVP) -->
+                    <div
+                        class="absolute right-0 top-full mt-1 w-40 bg-white border border-gray-100 shadow-lg rounded-lg hidden group-hover:block py-1 z-50">
+                        <a href="#" onclick="switchRole('業務')"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">業務</a>
+                        <a href="#" onclick="switchRole('財務')"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">財務</a>
+                        <a href="#" onclick="switchRole('設計')"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">設計</a>
+                        <a href="#" onclick="switchRole('媒體')"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">媒體</a>
+                        <a href="#" onclick="switchRole('經管')"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">經管</a>
+                        <a href="#" onclick="switchRole('物流客服')"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">物流客服</a>
+                    </div>
+                </div>
+
+                <!-- Notifications -->
+                <button class="relative p-2 text-gray-400 hover:text-hhg-600 transition-colors">
+                    <i data-lucide="bell" class="w-5 h-5"></i>
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Scrollable Page Content -->
+        <div id="contentArea" class="flex-1 overflow-y-auto p-6 bg-gray-50 custom-scrollbar">
+
+            <!-- 1. Dashboard (Default) -->
+            <!-- 1. Dashboard Overview -->
+            <section id="dashboard-overview" class="page-section space-y-6 animate-fade-in">
+
+                <!-- Advanced Filters Bar -->
+                <div
+                    class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col lg:flex-row gap-4 lg:items-end justify-between">
+                    <div class="flex flex-wrap gap-4">
+                        <!-- Brand -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1">品牌 (Brand)</label>
+                            <div class="flex bg-gray-100 rounded-lg p-1 gap-1">
+                                <button
+                                    class="px-3 py-1 bg-white shadow-sm rounded-md text-xs font-bold text-hhg-900">ALL</button>
+                                <button
+                                    class="px-3 py-1 hover:bg-white/50 rounded-md text-xs font-medium text-gray-600">Persil</button>
+                                <button
+                                    class="px-3 py-1 hover:bg-white/50 rounded-md text-xs font-medium text-gray-600">Combat</button>
+                                <button
+                                    class="px-3 py-1 hover:bg-white/50 rounded-md text-xs font-medium text-gray-600">Bref</button>
+                                <button
+                                    class="px-3 py-1 hover:bg-white/50 rounded-md text-xs font-medium text-gray-600">Pril</button>
+                            </div>
+                        </div>
+
+                        <!-- Platform -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1">電商通路 (Platform)</label>
+                            <select
+                                class="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-hhg-500 focus:border-hhg-500 block w-32 p-1.5 font-medium">
+                                <option>ALL</option>
+                                <option>momo</option>
+                                <option>蝦皮 (Shopee)</option>
+                                <option>Pchome</option>
+                                <option>Yahoo</option>
+                                <option>官網 (Official)</option>
+                            </select>
+                        </div>
+
+                        <!-- Period Toggle -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1">週期 (Period)</label>
+                            <div class="flex bg-gray-100 rounded-lg p-1 gap-1">
+                                <button
+                                    class="px-3 py-1 hover:bg-white/50 rounded-md text-xs font-medium text-gray-600">日</button>
+                                <button
+                                    class="px-3 py-1 hover:bg-white/50 rounded-md text-xs font-medium text-gray-600">週</button>
+                                <button
+                                    class="px-3 py-1 bg-white shadow-sm rounded-md text-xs font-bold text-hhg-900">月</button>
+                            </div>
+                        </div>
+
+                        <!-- Date Range -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1">自訂日期 (Range)</label>
+                            <div class="flex items-center gap-2">
+                                <input type="date" value="2026-01-01"
+                                    class="bg-gray-50 border border-gray-200 text-gray-600 text-xs rounded-lg p-1.5 focus:ring-hhg-500 focus:border-hhg-500">
+                                <span class="text-gray-400">-</span>
+                                <input type="date" value="2026-01-31"
+                                    class="bg-gray-50 border border-gray-200 text-gray-600 text-xs rounded-lg p-1.5 focus:ring-hhg-500 focus:border-hhg-500">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KPI Cards (7 Metrics) -->
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+                    <!-- 1. GMV -->
+                    <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100">
+                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">本月 GMV</p>
+                        <h3 class="text-lg font-bold text-gray-900 mt-1">$2.4M</h3>
+                        <p class="text-[10px] text-green-600 font-bold mt-1 flex items-center gap-0.5"><i
+                                data-lucide="trending-up" class="w-3 h-3"></i> +12%</p>
+                    </div>
+                    <!-- 2. Target -->
+                    <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100">
+                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">本月目標</p>
+                        <h3 class="text-lg font-bold text-gray-900 mt-1">$3.0M</h3>
+                        <p class="text-[10px] text-gray-400 font-medium mt-1">Gap: $0.6M</p>
+                    </div>
+                    <!-- 3. Achievement -->
+                    <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100">
+                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">達成率</p>
+                        <h3 class="text-lg font-bold text-hhg-600 mt-1">80%</h3>
+                        <div class="w-full bg-gray-100 rounded-full h-1 mt-2">
+                            <div class="bg-hhg-500 h-1 rounded-full" style="width: 80%"></div>
+                        </div>
+                    </div>
+                    <!-- 4. Orders -->
+                    <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100">
+                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">訂單數</p>
+                        <h3 class="text-lg font-bold text-gray-900 mt-1">1,850</h3>
+                        <p class="text-[10px] text-green-600 font-bold mt-1">+5% YoY</p>
+                    </div>
+                    <!-- 5. AOV -->
+                    <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100">
+                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">客單價 (AOV)</p>
+                        <h3 class="text-lg font-bold text-gray-900 mt-1">$1,298</h3>
+                        <p class="text-[10px] text-red-500 font-bold mt-1">-2% vs Last M</p>
+                    </div>
+                    <!-- 6. CVR -->
+                    <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100">
+                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">轉換率 (CVR)</p>
+                        <h3 class="text-lg font-bold text-blue-600 mt-1">3.2%</h3>
+                        <p class="text-[10px] text-gray-400 font-medium mt-1">Target: 3.0%</p>
+                    </div>
+                    <!-- 7. Traffic -->
+                    <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100">
+                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-wider">流量 (Traffic)</p>
+                        <h3 class="text-lg font-bold text-gray-900 mt-1">45.2k</h3>
+                        <p class="text-[10px] text-green-600 font-bold mt-1 flex items-center gap-0.5"><i
+                                data-lucide="arrow-up-right" class="w-3 h-3"></i> +8%</p>
+                    </div>
+                </div>
+
+                <!-- Main Chart -->
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 h-96">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-gray-800">每日總業績趨勢 (Daily GMV)</h3>
+                        <button class="text-gray-400 hover:text-gray-600"><i data-lucide="more-horizontal"></i></button>
+                    </div>
+                    <div class="h-full pb-6">
+                        <!-- Reusing the existing canvas ID to keep app.js logic working -->
+                        <canvas id="gmvChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- 2. Channel Details -->
+            <section id="dashboard-channel" class="page-section hidden space-y-6 animate-fade-in">
+
+                <!-- Anomaly Warning -->
+                <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-xl flex items-start justify-between">
+                    <div class="flex gap-3">
+                        <div class="p-2 bg-red-100 rounded-full text-red-600"><i data-lucide="alert-triangle"
+                                class="w-5 h-5"></i></div>
+                        <div>
+                            <h3 class="font-bold text-red-800">異常預警 (Anomaly Detection)</h3>
+                            <p class="text-sm text-red-700 mt-1">AI 偵測到 <strong>官網 (Official)</strong> 流量於今日 14:00 驟降
+                                45%，請檢查伺服器或廣告投放狀態。</p>
+                            <p class="text-sm text-red-700 mt-0.5"><strong>Shopee</strong> 退貨率較上週攀升 2.5%，建議檢查 "Persil
+                                2.5L" 商品頁面。</p>
+                        </div>
+                    </div>
+                    <button
+                        class="text-sm bg-white border border-red-200 text-red-600 px-3 py-1 rounded hover:bg-red-50 font-medium">查看詳情</button>
+                </div>
+
+                <!-- Channel Cards Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <!-- momo -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="bg-pink-50 p-3 border-b border-pink-100 flex justify-between items-center">
+                            <span class="font-bold text-pink-700 flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-pink-500"></div> momo
+                            </span>
+                            <i data-lucide="external-link"
+                                class="w-4 h-4 text-pink-300 hover:text-pink-500 cursor-pointer"></i>
+                        </div>
+                        <div class="p-4 space-y-3">
+                            <div>
+                                <p class="text-[10px] text-gray-500 uppercase">業績 (Rev)</p>
+                                <p class="font-bold text-gray-900">$1,240,000</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-gray-500 uppercase">流量 (Traffic)</p>
+                                <p class="font-bold text-gray-900">45,000</p>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <p class="text-[10px] text-gray-500 uppercase">CVR</p>
+                                    <p class="font-bold text-gray-800">3.5%</p>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] text-gray-500 uppercase">AOV</p>
+                                    <p class="font-bold text-gray-800">$1,100</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shopee -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="bg-orange-50 p-3 border-b border-orange-100 flex justify-between items-center">
+                            <span class="font-bold text-orange-700 flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-orange-500"></div> Shopee
+                            </span>
+                            <i data-lucide="external-link"
+                                class="w-4 h-4 text-orange-300 hover:text-orange-500 cursor-pointer"></i>
+                        </div>
+                        <div class="p-4 space-y-3">
+                            <div>
+                                <p class="text-[10px] text-gray-500 uppercase">業績 (Rev)</p>
+                                <p class="font-bold text-gray-900">$850,000</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-gray-500 uppercase">流量 (Traffic)</p>
+                                <p class="font-bold text-gray-900">62,000</p>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <p class="text-[10px] text-gray-500 uppercase">CVR</p>
+                                    <p class="font-bold text-gray-800">2.1%</p>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] text-gray-500 uppercase">AOV</p>
+                                    <p class="font-bold text-gray-800">$650</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pchome -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="bg-blue-50 p-3 border-b border-blue-100 flex justify-between items-center">
+                            <span class="font-bold text-blue-700 flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-blue-500"></div> PChome
+                            </span>
+                            <i data-lucide="external-link"
+                                class="w-4 h-4 text-blue-300 hover:text-blue-500 cursor-pointer"></i>
+                        </div>
+                        <div class="p-4 space-y-3">
+                            <div>
+                                <p class="text-[10px] text-gray-500 uppercase">業績 (Rev)</p>
+                                <p class="font-bold text-gray-900">$420,000</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-gray-500 uppercase">流量 (Traffic)</p>
+                                <p class="font-bold text-gray-900">12,000</p>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <p class="text-[10px] text-gray-500 uppercase">CVR</p>
+                                    <p class="font-bold text-gray-800">4.2%</p>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] text-gray-500 uppercase">AOV</p>
+                                    <p class="font-bold text-gray-800">$1,450</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Yahoo -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="bg-purple-50 p-3 border-b border-purple-100 flex justify-between items-center">
+                            <span class="font-bold text-purple-700 flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-purple-500"></div> Yahoo
+                            </span>
+                            <i data-lucide="external-link"
+                                class="w-4 h-4 text-purple-300 hover:text-purple-500 cursor-pointer"></i>
+                        </div>
+                        <div class="p-4 space-y-3">
+                            <div>
+                                <p class="text-[10px] text-gray-500 uppercase">業績 (Rev)</p>
+                                <p class="font-bold text-gray-900">$180,000</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-gray-500 uppercase">流量 (Traffic)</p>
+                                <p class="font-bold text-gray-900">8,500</p>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <p class="text-[10px] text-gray-500 uppercase">CVR</p>
+                                    <p class="font-bold text-gray-800">2.8%</p>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] text-gray-500 uppercase">AOV</p>
+                                    <p class="font-bold text-gray-800">$980</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Official -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="bg-gray-50 p-3 border-b border-gray-100 flex justify-between items-center">
+                            <span class="font-bold text-gray-700 flex items-center gap-2">
+                                <div class="w-2 h-2 rounded-full bg-gray-500"></div> Official
+                            </span>
+                            <i data-lucide="external-link"
+                                class="w-4 h-4 text-gray-300 hover:text-gray-500 cursor-pointer"></i>
+                        </div>
+                        <div class="p-4 space-y-3">
+                            <div>
+                                <p class="text-[10px] text-gray-500 uppercase">業績 (Rev)</p>
+                                <p class="font-bold text-gray-900">$350,000</p>
+                            </div>
+                            <div>
+                                <p class="text-[10px] text-gray-500 uppercase">流量 (Traffic)</p>
+                                <p class="font-bold text-red-500">10,200 <i data-lucide="arrow-down"
+                                        class="w-3 h-3 inline"></i></p>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <p class="text-[10px] text-gray-500 uppercase">CVR</p>
+                                    <p class="font-bold text-gray-800">5.5%</p>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] text-gray-500 uppercase">AOV</p>
+                                    <p class="font-bold text-gray-800">$1,600</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Report Center -->
+            <section id="dashboard-report" class="page-section hidden animate-fade-in h-full flex flex-col">
+                <div
+                    class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-gray-800 flex items-center gap-2"><i data-lucide="bar-chart-2"
+                            class="w-5 h-5 text-gray-400"></i> Looker Studio 報表中心</h3>
+                    <div class="flex gap-2">
+                        <button
+                            class="text-sm border border-gray-200 px-3 py-1.5 rounded hover:bg-gray-50">重新整理</button>
+                        <button
+                            class="text-sm bg-hhg-500 text-white px-3 py-1.5 rounded hover:bg-hhg-600 font-bold">全螢幕</button>
+                    </div>
+                </div>
+                <!-- Mock Iframe -->
+                <!-- Live Looker Studio Iframe -->
+                <div class="flex-1 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden relative">
+                    <iframe width="600" height="1500"
+                        src="https://lookerstudio.google.com/embed/reporting/70ac0d8d-798b-4a96-b656-6b5ae8febd59/page/ANQeD"
+                        frameborder="0" style="border:0" allowfullscreen
+                        sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+                        class="absolute inset-0 w-full h-full">
+                    </iframe>
+                </div>
+                <span class="bg-white px-4 py-2 rounded-full shadow-lg text-xs font-bold text-gray-700">Interactive
+                    Report View</span>
+            </section>
+
+
+            <!-- 2. Competitor -->
+            <section id="competitor" class="page-section hidden space-y-6 animate-fade-in">
+
+                <!-- Competitor Header -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 font-bold border border-blue-100 shadow-inner">
+                            Ariel
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-900">競品情報中心：Ariel</h2>
+                            <p class="text-gray-500 text-sm">主要競爭對手 (Primary Competitor) | 監測中</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <span
+                            class="px-3 py-1 bg-red-50 text-red-600 rounded-full text-xs font-bold border border-red-100 flex items-center gap-1">
+                            <i data-lucide="flame" class="w-3 h-3"></i> 促銷激戰中
+                        </span>
+                        <button class="text-gray-400 hover:text-gray-600"><i data-lucide="settings"
+                                class="w-5 h-5"></i></button>
+                    </div>
+                </div>
+
+                <!-- 1. Price Monitoring (Persil vs Ariel) -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                        <h3 class="font-bold text-gray-800 flex items-center gap-2">
+                            <i data-lucide="dollar-sign" class="w-4 h-4 text-hhg-600"></i> 價格監測 (Price Monitor)
+                        </h3>
+                        <p class="text-xs text-gray-500">來源：momo / 蝦皮 / PChome (Updated 10 mins ago)</p>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="text-xs text-gray-500 bg-gray-50 uppercase">
+                                <tr>
+                                    <th class="px-6 py-3">對標商品 (Our SKU)</th>
+                                    <th class="px-6 py-3">競品商品 (Competitor SKU)</th>
+                                    <th class="px-6 py-3 text-center">平台</th>
+                                    <th class="px-6 py-3 text-right">我方售價</th>
+                                    <th class="px-6 py-3 text-right">對方售價</th>
+                                    <th class="px-6 py-3 text-center">價差</th>
+                                    <th class="px-6 py-3 text-center">狀態</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                <!-- Row 1 -->
+                                <tr class="bg-white hover:bg-red-50 transition-colors group">
+                                    <td class="px-6 py-4 font-bold text-gray-800">Persil 凝露 2.5L</td>
+                                    <td class="px-6 py-4 text-gray-600">Ariel 超濃縮 2.2L (除菌)</td>
+                                    <td class="px-6 py-4 text-center"><span
+                                            class="bg-pink-100 text-pink-600 px-2 py-0.5 rounded text-xs font-bold">momo</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right font-medium">$599</td>
+                                    <td class="px-6 py-4 text-right font-bold text-red-600">$499</td>
+                                    <td class="px-6 py-4 text-center text-red-600 font-bold">+20%</td>
+                                    <td class="px-6 py-4 text-center"><span
+                                            class="inline-flex items-center gap-1 bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-bold"><i
+                                                data-lucide="alert-octagon" class="w-3 h-3"></i> 價格劣勢</span></td>
+                                </tr>
+                                <!-- Row 2 -->
+                                <tr class="bg-white hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4 font-bold text-gray-800">Persil 膠囊 36入</td>
+                                    <td class="px-6 py-4 text-gray-600">Ariel 4D 抗菌膠囊 31入</td>
+                                    <td class="px-6 py-4 text-center"><span
+                                            class="bg-orange-100 text-orange-600 px-2 py-0.5 rounded text-xs font-bold">Shopee</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right font-medium">$329</td>
+                                    <td class="px-6 py-4 text-right font-medium text-gray-800">$349</td>
+                                    <td class="px-6 py-4 text-center text-green-600 font-bold">-6%</td>
+                                    <td class="px-6 py-4 text-center"><span
+                                            class="inline-flex items-center gap-1 bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-bold"><i
+                                                data-lucide="check-circle" class="w-3 h-3"></i> 價格優勢</span></td>
+                                </tr>
+                                <!-- Row 3 -->
+                                <tr class="bg-white hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4 font-bold text-gray-800">Bref 馬桶球 (海洋)</td>
+                                    <td class="px-6 py-4 text-gray-600">Ariel 浴廁清潔劑</td>
+                                    <td class="px-6 py-4 text-center"><span
+                                            class="bg-blue-100 text-blue-600 px-2 py-0.5 rounded text-xs font-bold">PChome</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right font-medium">$199</td>
+                                    <td class="px-6 py-4 text-right font-medium text-gray-800">$199</td>
+                                    <td class="px-6 py-4 text-center text-gray-400">0%</td>
+                                    <td class="px-6 py-4 text-center"><span
+                                            class="inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs font-bold">持平</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- 2. Campaign Intelligence timeline -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <h3 class="font-bold text-gray-800 mb-6 flex items-center gap-2">
+                            <i data-lucide="calendar-days" class="w-4 h-4 text-hhg-600"></i> 競品檔期活動 (Campaign
+                            Timeline)
+                        </h3>
+                        <div class="relative border-l-2 border-gray-200 ml-3 space-y-8">
+                            <!-- Event 1 -->
+                            <div class="relative pl-6">
+                                <span
+                                    class="absolute -left-[9px] top-0 w-4 h-4 bg-red-500 rounded-full border-2 border-white shadow-sm ring-2 ring-red-100"></span>
+                                <p class="text-xs text-gray-400 font-mono mb-1">Today (Jan 05)</p>
+                                <h4 class="text-base font-bold text-gray-900">Ariel x momo 超級品牌日</h4>
+                                <p class="text-sm text-gray-600 mt-1">全館滿 $999 折 $100，加贈 4D 膠囊試用包。</p>
+                                <div class="mt-2 flex gap-2">
+                                    <span class="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded">滿額折</span>
+                                    <span class="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded">贈品</span>
+                                </div>
+                            </div>
+                            <!-- Event 2 -->
+                            <div class="relative pl-6">
+                                <span
+                                    class="absolute -left-[9px] top-0 w-4 h-4 bg-gray-300 rounded-full border-2 border-white"></span>
+                                <p class="text-xs text-gray-400 font-mono mb-1">Jan 12 (Upcoming)</p>
+                                <h4 class="text-base font-bold text-gray-700">Ariel 新品發布會 (預測)</h4>
+                                <p class="text-sm text-gray-500 mt-1">監測到社群媒體 Hashtag 增溫，預計推出新款室內晾衣型。</p>
+                            </div>
+                            <!-- Event 3 -->
+                            <div class="relative pl-6">
+                                <span
+                                    class="absolute -left-[9px] top-0 w-4 h-4 bg-gray-300 rounded-full border-2 border-white"></span>
+                                <p class="text-xs text-gray-400 font-mono mb-1">Jan 24 (CNY)</p>
+                                <h4 class="text-base font-bold text-gray-700">年貨節大促</h4>
+                                <p class="text-sm text-gray-500 mt-1">歷史數據顯示通常下殺 6 折。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. AI Analysis & Market Keywords -->
+                    <div class="space-y-6">
+                        <!-- AI Analysis -->
+                        <div
+                            class="bg-gradient-to-br from-indigo-50 to-white p-6 rounded-xl shadow-sm border border-indigo-100">
+                            <div class="flex items-center gap-2 mb-4">
+                                <div
+                                    class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-lg">
+                                    <i data-lucide="bot" class="w-4 h-4"></i>
+                                </div>
+                                <h3 class="font-bold text-indigo-900">AI 戰略分析</h3>
+                            </div>
+                            <div class="text-sm text-gray-700 leading-relaxed space-y-3">
+                                <p>
+                                    <strong class="text-indigo-700">🚨 警訊發現：</strong> Ariel
+                                    用戶留存率近期提升。分析顯示，競爭對手正透過「高頻次的
+                                    momo 品牌日」搭配「低價試用包」策略，意圖搶攻重視 CP 值的年輕租屋族群。
+                                </p>
+                                <p>
+                                    <strong class="text-indigo-700">💡 建議對策：</strong> 建議 HHG 針對 Persil 2.5L
+                                    進行「買一送一」快閃活動，並在社群強調「德國科技潔淨力 > 價格優勢」，鞏固高品質客群。
+                                </p>
+                            </div>
+                            <button
+                                class="mt-4 w-full py-2 bg-white border border-indigo-200 text-indigo-600 text-sm font-bold rounded-lg hover:bg-indigo-50 transition-colors shadow-sm">
+                                生成詳細競品報告 (PDF)
+                            </button>
+                        </div>
+
+                        <!-- Keywords Cloud (Visual Mock) -->
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                            <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                <i data-lucide="hash" class="w-4 h-4 text-hhg-600"></i> 市場熱搜關鍵字 (Trending)
+                            </h3>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">#Ariel抗菌</span>
+                                <span
+                                    class="px-3 py-1 bg-red-50 text-red-600 rounded-full text-sm font-bold">#Persil買一送一</span>
+                                <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">#洗衣球推薦</span>
+                                <span
+                                    class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm font-bold">#除菌洗衣精</span>
+                                <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">#室內晾衣</span>
+                                <span class="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm">#好市多洗碗精</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Price Trend Chart -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-bold text-gray-800">價格走勢對比 (Price Trend: 30 Days)</h3>
+                        <div class="flex items-center gap-4 text-sm">
+                            <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-hhg-500"></span>
+                                Persil</div>
+                            <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-blue-500"></span>
+                                Ariel</div>
+                        </div>
+                    </div>
+                    <div class="relative h-64 w-full">
+                        <canvas id="competitorChart"></canvas>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Other sections placeholders... -->
+            <!-- 3. Ecommerce Ops -->
+            <section id="ecommerce" class="page-section hidden space-y-6 animate-fade-in">
+                <!-- Top Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div
+                        class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-gray-500 font-medium">上架商品數</p>
+                            <h3 class="text-2xl font-bold text-gray-900 mt-1">142</h3>
+                        </div>
+                        <div class="p-3 bg-blue-50 rounded-lg text-blue-600"><i data-lucide="package"
+                                class="w-6 h-6"></i>
+                        </div>
+                    </div>
+                    <div
+                        class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-gray-500 font-medium">庫存緊張 SKU</p>
+                            <h3 class="text-2xl font-bold text-red-500 mt-1">8</h3>
+                        </div>
+                        <div class="p-3 bg-red-50 rounded-lg text-red-600"><i data-lucide="alert-circle"
+                                class="w-6 h-6"></i></div>
+                    </div>
+                    <div
+                        class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-gray-500 font-medium">平均庫存週轉天數</p>
+                            <h3 class="text-2xl font-bold text-gray-900 mt-1">24.5</h3>
+                        </div>
+                        <div class="p-3 bg-green-50 rounded-lg text-green-600"><i data-lucide="refresh-cw"
+                                class="w-6 h-6"></i></div>
+                    </div>
+                    <div
+                        class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-gray-500 font-medium">滯銷商品 (>90天)</p>
+                            <h3 class="text-2xl font-bold text-orange-500 mt-1">12</h3>
+                        </div>
+                        <div class="p-3 bg-orange-50 rounded-lg text-orange-600"><i data-lucide="archive"
+                                class="w-6 h-6"></i></div>
+                    </div>
+                </div>
+
+                <!-- Main Grid: Product List & AI Copywriter -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                    <!-- Left: Product List (Mini) -->
+                    <div
+                        class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[500px]">
+                        <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                            <h3 class="font-bold text-gray-800 flex items-center gap-2">
+                                <i data-lucide="list" class="w-4 h-4"></i> 商品管理列表 (Top 5)
+                            </h3>
+                            <button
+                                class="text-xs bg-white border border-gray-200 hover:bg-gray-50 px-3 py-1 rounded-lg text-gray-600 transition-colors">View
+                                All</button>
+                        </div>
+                        <div class="overflow-y-auto flex-1 custom-scrollbar">
+                            <table class="w-full text-sm text-left">
+                                <thead class="text-xs text-gray-500 bg-gray-50 uppercase sticky top-0">
+                                    <tr>
+                                        <th class="px-4 py-3">商品名稱</th>
+                                        <th class="px-4 py-3 text-right">庫存</th>
+                                        <th class="px-4 py-3 text-center">狀態</th>
+                                        <th class="px-4 py-3 text-center">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-100">
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 font-medium text-gray-900">Persil 寶瀅 全效能洗衣凝露 2.5L</td>
+                                        <td class="px-4 py-3 text-right font-bold text-green-600">1,240</td>
+                                        <td class="px-4 py-3 text-center"><span
+                                                class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">正常</span>
+                                        </td>
+                                        <td class="px-4 py-3 text-center"><button
+                                                class="text-hhg-500 hover:text-hhg-600 text-xs font-bold"
+                                                onclick="fillProductData('Persil 寶瀅 全效能洗衣凝露 2.5L')">選用</button></td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 font-medium text-gray-900">Bref 妙力 懸掛式馬桶球 (海洋)</td>
+                                        <td class="px-4 py-3 text-right font-bold text-gray-600">850</td>
+                                        <td class="px-4 py-3 text-center"><span
+                                                class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">正常</span>
+                                        </td>
+                                        <td class="px-4 py-3 text-center"><button
+                                                class="text-hhg-500 hover:text-hhg-600 text-xs font-bold"
+                                                onclick="fillProductData('Bref 妙力 懸掛式馬桶球 (海洋)')">選用</button></td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 font-medium text-gray-900">Pril 淨麗 小蘇打洗碗精 750ml</td>
+                                        <td class="px-4 py-3 text-right font-bold text-red-500">42</td>
+                                        <td class="px-4 py-3 text-center"><span
+                                                class="bg-red-100 text-red-700 text-xs px-2 py-0.5 rounded-full">缺貨</span>
+                                        </td>
+                                        <td class="px-4 py-3 text-center"><button
+                                                class="text-hhg-500 hover:text-hhg-600 text-xs font-bold"
+                                                onclick="fillProductData('Pril 淨麗 小蘇打洗碗精 750ml')">選用</button></td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 font-medium text-gray-900">Combat 威滅 滅蟑隊 6入</td>
+                                        <td class="px-4 py-3 text-right font-bold text-gray-600">2,100</td>
+                                        <td class="px-4 py-3 text-center"><span
+                                                class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full">正常</span>
+                                        </td>
+                                        <td class="px-4 py-3 text-center"><button
+                                                class="text-hhg-500 hover:text-hhg-600 text-xs font-bold"
+                                                onclick="fillProductData('Combat 威滅 滅蟑隊 6入')">選用</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Right: AI Copywriter -->
+                    <div
+                        class="bg-gradient-to-br from-hhg-50 to-white rounded-xl shadow-md border border-hhg-200 p-6 flex flex-col h-[500px]">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div
+                                class="w-10 h-10 rounded-full bg-hhg-500 text-white flex items-center justify-center shrink-0 shadow-sm">
+                                <i data-lucide="sparkles" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-gray-900">AI 智能文案生產器</h3>
+                                <p class="text-xs text-gray-500">自動生成符合 momo/蝦皮 規範的標題與貼文</p>
+                            </div>
+                        </div>
+
+                        <div class="flex-1 space-y-4 flex flex-col">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-500 mb-1">商品名稱 (Product
+                                    Name)</label>
+                                <input type="text" id="aiProductName"
+                                    class="w-full rounded-lg border-gray-200 bg-white focus:ring-hhg-500 focus:border-hhg-500 text-sm"
+                                    placeholder="請點選左側商品或手動輸入...">
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-500 mb-1">主打賣點 (Key
+                                        Features)</label>
+                                    <input type="text" id="aiProductFeatures"
+                                        class="w-full rounded-lg border-gray-200 bg-white focus:ring-hhg-500 focus:border-hhg-500 text-sm"
+                                        placeholder="例如: 德國科技, 強效去漬">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-500 mb-1">目標平台
+                                        (Platform)</label>
+                                    <select id="aiPlatform"
+                                        class="w-full rounded-lg border-gray-200 bg-white focus:ring-hhg-500 focus:border-hhg-500 text-sm">
+                                        <option value="momo">momo 購物網</option>
+                                        <option value="shopee">蝦皮購物</option>
+                                        <option value="instagram">Instagram 貼文</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button onclick="generateCopy()"
+                                class="w-full bg-hhg-500 hover:bg-hhg-600 text-white font-bold py-2 rounded-lg shadow-sm transition-all transform active:scale-95 flex items-center justify-center gap-2">
+                                <i data-lucide="wand-2" class="w-4 h-4"></i>
+                                開始生成 (Generate)
+                            </button>
+
+                            <div
+                                class="flex-1 bg-white border border-gray-200 rounded-lg p-3 overflow-y-auto relative custom-scrollbar">
+                                <span class="absolute top-2 right-2 text-xs text-gray-300 pointer-events-none">AI
+                                    Result
+                                    Area</span>
+                                <div id="aiResultContent"
+                                    class="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed min-h-full">
+                                    <span class="text-gray-400 italic">等待生成中...</span>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button
+                                    class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-600 text-xs font-bold py-2 rounded-lg transition-colors"
+                                    onclick="navigator.clipboard.writeText(document.getElementById('aiResultContent').innerText); alert('已複製文案！')">複製文案</button>
+                                <button
+                                    class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-600 text-xs font-bold py-2 rounded-lg transition-colors"
+                                    onclick="document.getElementById('aiResultContent').innerHTML = '<span class=\'text-gray-400 italic\'>等待生成中...</span>'">清除</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- 4. Work Management -->
+            <section id="work" class="page-section hidden space-y-6 animate-fade-in">
+                <div class="flex justify-between items-center bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                    <h2 class="text-xl font-bold text-gray-900 flex items-center gap-2">
+                        <i data-lucide="check-square" class="w-6 h-6 text-hhg-600"></i> 工作管理中心
+                    </h2>
+                    <button
+                        class="bg-hhg-500 hover:bg-hhg-600 text-white px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 shadow-sm transition-colors">
+                        <i data-lucide="plus" class="w-4 h-4"></i> 新增任務
+                    </button>
+                </div>
+
+                <!-- Kanban Board -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 h-full overflow-hidden">
+                    <!-- Column: To Do -->
+                    <div class="flex flex-col bg-gray-100 rounded-xl p-4 h-[600px]">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-gray-700">待處理 (To Do)</h3>
+                            <span class="bg-gray-200 text-gray-600 text-xs px-2 py-1 rounded-full font-bold">3</span>
+                        </div>
+                        <div class="flex-1 overflow-y-auto space-y-3 custom-scrollbar pr-2">
+                            <!-- Task Card -->
+                            <div
+                                class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-pointer">
+                                <div class="flex justify-between items-start mb-2">
+                                    <span
+                                        class="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded font-bold">設計需求</span>
+                                    <i data-lucide="more-horizontal"
+                                        class="w-4 h-4 text-gray-400 hover:text-gray-600"></i>
+                                </div>
+                                <h4 class="font-bold text-gray-800 text-sm mb-1">Persil 新年活動 Banner</h4>
+                                <p class="text-xs text-gray-500 line-clamp-2">需製作官網主視覺、FB 廣告圖尺寸，強調「除菌」與「新年優惠」。</p>
+                                <div class="mt-3 flex items-center justify-between">
+                                    <div class="flex -space-x-2">
+                                        <div
+                                            class="w-6 h-6 rounded-full bg-purple-500 text-white flex items-center justify-center text-[10px] border border-white">
+                                            D</div>
+                                    </div>
+                                    <span class="text-[10px] text-gray-400 flex items-center gap-1"><i
+                                            data-lucide="calendar" class="w-3 h-3"></i> Jan 08</span>
+                                </div>
+                            </div>
+                            <!-- Task Card -->
+                            <div
+                                class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-pointer">
+                                <div class="flex justify-between items-start mb-2">
+                                    <span
+                                        class="bg-orange-100 text-orange-700 text-[10px] px-2 py-0.5 rounded font-bold">行政</span>
+                                    <i data-lucide="more-horizontal"
+                                        class="w-4 h-4 text-gray-400 hover:text-gray-600"></i>
+                                </div>
+                                <h4 class="font-bold text-gray-800 text-sm mb-1">Q1 部門聚餐訂位</h4>
+                                <p class="text-xs text-gray-500 line-clamp-2">預算每人 $1000，地點：信義區。</p>
+                                <div class="mt-3 flex items-center justify-between">
+                                    <div class="flex -space-x-2">
+                                        <div
+                                            class="w-6 h-6 rounded-full bg-gray-500 text-white flex items-center justify-center text-[10px] border border-white">
+                                            A</div>
+                                    </div>
+                                    <span class="text-[10px] text-gray-400 flex items-center gap-1"><i
+                                            data-lucide="calendar" class="w-3 h-3"></i> Jan 15</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column: In Progress -->
+                    <div class="flex flex-col bg-gray-100 rounded-xl p-4 h-[600px]">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-hhg-700">進行中 (In Progress)</h3>
+                            <span class="bg-hhg-100 text-hhg-700 text-xs px-2 py-1 rounded-full font-bold">2</span>
+                        </div>
+                        <div class="flex-1 overflow-y-auto space-y-3 custom-scrollbar pr-2">
+                            <div
+                                class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-hhg-500 hover:shadow-md transition-shadow cursor-pointer">
+                                <div class="flex justify-between items-start mb-2">
+                                    <span
+                                        class="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded font-bold">業務</span>
+                                    <i data-lucide="more-horizontal"
+                                        class="w-4 h-4 text-gray-400 hover:text-gray-600"></i>
+                                </div>
+                                <h4 class="font-bold text-gray-800 text-sm mb-1">momo 38 女王節提報</h4>
+                                <p class="text-xs text-gray-500 line-clamp-2">確認各品牌主打品項、毛利結構試算、贈品庫存確認。</p>
+                                <div class="mt-3 flex items-center justify-between">
+                                    <div class="flex -space-x-2">
+                                        <div
+                                            class="w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-[10px] border border-white">
+                                            S</div>
+                                        <div
+                                            class="w-6 h-6 rounded-full bg-yellow-500 text-white flex items-center justify-center text-[10px] border border-white">
+                                            M</div>
+                                    </div>
+                                    <span class="text-[10px] text-red-500 font-bold flex items-center gap-1"><i
+                                            data-lucide="clock" class="w-3 h-3"></i> Today</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column: Done -->
+                    <div class="flex flex-col bg-gray-100 rounded-xl p-4 h-[600px]">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-green-700">已完成 (Done)</h3>
+                            <span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-bold">12</span>
+                        </div>
+                        <div class="flex-1 overflow-y-auto space-y-3 custom-scrollbar pr-2">
+                            <div
+                                class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 opacity-75 hover:opacity-100 transition-opacity cursor-pointer">
+                                <div class="flex justify-between items-start mb-2">
+                                    <span
+                                        class="bg-gray-100 text-gray-600 text-[10px] px-2 py-0.5 rounded font-bold">會議</span>
+                                    <i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i>
+                                </div>
+                                <h4 class="font-bold text-gray-600 text-sm mb-1 line-through">週一週會報表整理</h4>
+                                <div class="mt-3 flex items-center justify-between">
+                                    <div class="flex -space-x-2">
+                                        <div
+                                            class="w-6 h-6 rounded-full bg-gray-400 text-white flex items-center justify-center text-[10px] border border-white">
+                                            U</div>
+                                    </div>
+                                    <span class="text-[10px] text-gray-400 flex items-center gap-1">Jan 02</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- 5. Knowledge Base -->
+            <!-- 5. Knowledge Base sections -->
+
+            <!-- 5.1 Department Knowledge Base -->
+            <section id="knowledge-base" class="page-section hidden space-y-6 animate-fade-in">
+                <div
+                    class="bg-gradient-to-r from-hhg-50 to-white p-8 rounded-2xl border border-hhg-100 flex flex-col md:flex-row items-center gap-8">
+                    <div class="flex-1 space-y-4">
+                        <span
+                            class="inline-block px-3 py-1 bg-hhg-100 text-hhg-700 rounded-full text-xs font-bold tracking-wide">AI-POWERED
+                            KNOWLEDGE</span>
+                        <h2 class="text-3xl font-bold text-gray-900">部門知識庫 (Department KB)</h2>
+                        <p class="text-gray-600">請選擇對應部門查看 SOP 與規章，或使用 NotebookLM 智慧問答。</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <!-- Cards for each department -->
+                    <!-- Sales -->
+                    <a href="https://notebooklm.google.com/notebook/23065350-d053-4f9a-a2fe-3620ff94b716"
+                        target="_blank"
+                        class="group bg-white p-6 rounded-xl border border-gray-100 hover:border-hhg-300 hover:shadow-lg transition-all">
+                        <div
+                            class="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 mb-4 group-hover:scale-110 transition-transform">
+                            <i data-lucide="briefcase" class="w-6 h-6"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-gray-900">業務部 (Sales)</h4>
+                        <p class="text-sm text-gray-500 mt-2">通路報價、合約條款、新品上架流程。</p>
+                        <div class="mt-4 flex items-center text-xs font-bold text-hhg-600">
+                            GO TO NOTEBOOK <i data-lucide="external-link" class="w-3 h-3 ml-1"></i>
+                        </div>
+                    </a>
+                    <!-- Finance -->
+                    <a href="https://notebooklm.google.com/notebook/311dbf5f-5dbc-468e-a26e-fe0a57260767"
+                        target="_blank"
+                        class="group bg-white p-6 rounded-xl border border-gray-100 hover:border-hhg-300 hover:shadow-lg transition-all">
+                        <div
+                            class="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center text-green-600 mb-4 group-hover:scale-110 transition-transform">
+                            <i data-lucide="banknote" class="w-6 h-6"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-gray-900">財務部 (Finance)</h4>
+                        <p class="text-sm text-gray-500 mt-2">核銷規範、預算分配、稅務處理。</p>
+                        <div class="mt-4 flex items-center text-xs font-bold text-hhg-600">
+                            GO TO NOTEBOOK <i data-lucide="external-link" class="w-3 h-3 ml-1"></i>
+                        </div>
+                    </a>
+                    <!-- HR -->
+                    <a href="https://notebooklm.google.com/notebook/4842103e-06f9-4b63-9ae7-09d9f6acec01"
+                        target="_blank"
+                        class="group bg-white p-6 rounded-xl border border-gray-100 hover:border-hhg-300 hover:shadow-lg transition-all">
+                        <div
+                            class="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center text-purple-600 mb-4 group-hover:scale-110 transition-transform">
+                            <i data-lucide="users" class="w-6 h-6"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-gray-900">人資部 (HR)</h4>
+                        <p class="text-sm text-gray-500 mt-2">請假規則、考核制度、員工福利。</p>
+                        <div class="mt-4 flex items-center text-xs font-bold text-hhg-600">
+                            GO TO NOTEBOOK <i data-lucide="external-link" class="w-3 h-3 ml-1"></i>
+                        </div>
+                    </a>
+                    <!-- Design -->
+                    <div
+                        class="group bg-white p-6 rounded-xl border border-gray-100 hover:border-hhg-300 hover:shadow-lg transition-all cursor-pointer">
+                        <div
+                            class="w-12 h-12 bg-pink-50 rounded-lg flex items-center justify-center text-pink-600 mb-4 group-hover:scale-110 transition-transform">
+                            <i data-lucide="palette" class="w-6 h-6"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-gray-900">設計部 (Design)</h4>
+                        <p class="text-sm text-gray-500 mt-2">CIS 規範、Banner 尺寸、品牌視覺。</p>
+                        <div class="mt-4 flex items-center text-xs font-bold text-gray-400">
+                            COMING SOON
+                        </div>
+                    </div>
+                    <!-- Media -->
+                    <div
+                        class="group bg-white p-6 rounded-xl border border-gray-100 hover:border-hhg-300 hover:shadow-lg transition-all cursor-pointer">
+                        <div
+                            class="w-12 h-12 bg-orange-50 rounded-lg flex items-center justify-center text-orange-600 mb-4 group-hover:scale-110 transition-transform">
+                            <i data-lucide="megaphone" class="w-6 h-6"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-gray-900">媒體部 (Media)</h4>
+                        <p class="text-sm text-gray-500 mt-2">廣告投放、KOL 合作、社群維運。</p>
+                        <div class="mt-4 flex items-center text-xs font-bold text-gray-400">
+                            COMING SOON
+                        </div>
+                    </div>
+                    <!-- Logistics -->
+                    <div
+                        class="group bg-white p-6 rounded-xl border border-gray-100 hover:border-hhg-300 hover:shadow-lg transition-all cursor-pointer">
+                        <div
+                            class="w-12 h-12 bg-amber-50 rounded-lg flex items-center justify-center text-amber-600 mb-4 group-hover:scale-110 transition-transform">
+                            <i data-lucide="truck" class="w-6 h-6"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-gray-900">物流管理部 (Logistics)</h4>
+                        <p class="text-sm text-gray-500 mt-2">出貨流程、庫存盤點、逆物流處理。</p>
+                        <div class="mt-4 flex items-center text-xs font-bold text-gray-400">
+                            COMING SOON
+                        </div>
+                    </div>
+                    <!-- Management -->
+                    <div
+                        class="group bg-white p-6 rounded-xl border border-gray-100 hover:border-hhg-300 hover:shadow-lg transition-all cursor-pointer">
+                        <div
+                            class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center text-gray-600 mb-4 group-hover:scale-110 transition-transform">
+                            <i data-lucide="bar-chart-3" class="w-6 h-6"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-gray-900">經營管理部 (Management)</h4>
+                        <p class="text-sm text-gray-500 mt-2">年度目標、經營分析、組織架構。</p>
+                        <div class="mt-4 flex items-center text-xs font-bold text-gray-400">
+                            COMING SOON
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5.2 Document Repository -->
+            <section id="knowledge-repo" class="page-section hidden space-y-6 animate-fade-in">
+                <div class="flex justify-between items-end">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900">文件倉庫 (Document Repository)</h2>
+                        <p class="text-gray-500 text-sm">統一存放 Google 生態系文件、PDF 與 Excel 檔案。</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button
+                            class="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-bold text-gray-600 hover:bg-gray-50 flex items-center gap-2">
+                            <i data-lucide="filter" class="w-4 h-4"></i> 篩選
+                        </button>
+                        <button
+                            class="px-4 py-2 bg-hhg-500 text-white rounded-lg text-sm font-bold hover:bg-hhg-600 flex items-center gap-2">
+                            <i data-lucide="upload" class="w-4 h-4"></i> 上傳文件
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <table class="w-full text-sm text-left">
+                        <thead class="bg-gray-50 text-xs text-gray-500 uppercase font-bold">
+                            <tr>
+                                <th class="px-6 py-4">檔案名稱 / 類型</th>
+                                <th class="px-6 py-4">儲存位置</th>
+                                <th class="px-6 py-4">擁有者</th>
+                                <th class="px-6 py-4">修改日期</th>
+                                <th class="px-6 py-4 text-right">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-8 h-8 bg-blue-50 text-blue-600 rounded flex items-center justify-center">
+                                            <i data-lucide="file-text" class="w-4 h-4"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-gray-900">2026 年度品牌行銷策略.pdf</p>
+                                            <p class="text-[10px] text-gray-400 font-medium">PDF • 1.2 MB</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-gray-600 text-xs">Shared Drive / Marketing / 2026</td>
+                                <td class="px-6 py-4 text-xs font-medium">Media Manager</td>
+                                <td class="px-6 py-4 text-gray-500 text-xs">2026-01-01 14:30</td>
+                                <td class="px-6 py-4 text-right">
+                                    <button class="p-1 hover:text-hhg-600 transition-colors"><i data-lucide="download"
+                                            class="w-4 h-4"></i></button>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-gray-50 transition-colors">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div
+                                            class="w-8 h-8 bg-green-50 text-green-600 rounded flex items-center justify-center">
+                                            <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-bold text-gray-900">各通路報價參考清單_v5.xlsx</p>
+                                            <p class="text-[10px] text-gray-400 font-medium">Google Sheets</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-gray-600 text-xs">Shared Drive / Sales / SOP</td>
+                                <td class="px-6 py-4 text-xs font-medium">Sales Director</td>
+                                <td class="px-6 py-4 text-gray-500 text-xs">2025-12-28 09:15</td>
+                                <td class="px-6 py-4 text-right">
+                                    <button class="p-1 hover:text-hhg-600 transition-colors"><i
+                                            data-lucide="external-link" class="w-4 h-4"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 5.3 Template Center -->
+            <section id="knowledge-templates" class="page-section hidden space-y-6 animate-fade-in">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900">範本中心 (Template Center)</h2>
+                    <p class="text-gray-500 text-sm">提供各部門標準範本下載，請務必詳閱注意事項。</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Template Item -->
+                    <div
+                        class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <span
+                                    class="px-2 py-0.5 bg-blue-50 text-blue-600 rounded text-[10px] font-bold">全通路</span>
+                                <i data-lucide="file-type-2" class="text-gray-200"></i>
+                            </div>
+                            <h4 class="font-bold text-gray-900">行銷活動提案簡報 (PPT)</h4>
+                            <p class="text-xs text-gray-500 mt-2 line-clamp-2">適用於跨平台促銷活動提案，包含 GMV 預估、折價券配置等模組。</p>
+                        </div>
+                        <div class="mt-6 space-y-4">
+                            <div
+                                class="p-3 bg-amber-50 rounded-lg text-[10px] text-amber-700 leading-relaxed border border-amber-100">
+                                <span class="font-bold">注意事項：</span>提交前須經由品牌主管初審，並確認毛利預估符合規範。
+                            </div>
+                            <button
+                                class="w-full py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold text-gray-700 hover:bg-hhg-500 hover:text-white hover:border-hhg-500 transition-all">
+                                <i data-lucide="download" class="inline w-4 h-4 mr-1"></i> 下載範本
+                            </button>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <span
+                                    class="px-2 py-0.5 bg-green-50 text-green-600 rounded text-[10px] font-bold">財務部</span>
+                                <i data-lucide="file-spreadsheet" class="text-gray-200"></i>
+                            </div>
+                            <h4 class="font-bold text-gray-900">差旅暨零用金報銷單</h4>
+                            <p class="text-xs text-gray-500 mt-2">正式員工報銷差旅費及公務零用金使用。</p>
+                        </div>
+                        <div class="mt-6 space-y-4">
+                            <div
+                                class="p-3 bg-amber-50 rounded-lg text-[10px] text-amber-700 leading-relaxed border border-amber-100">
+                                <span class="font-bold">注意事項：</span>發票須開立完整統編，電子發票請列印並附上隨機碼。
+                            </div>
+                            <button
+                                class="w-full py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-bold text-gray-700 hover:bg-hhg-500 hover:text-white hover:border-hhg-500 transition-all">
+                                <i data-lucide="download" class="inline w-4 h-4 mr-1"></i> 下載範本
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5.4 No Basis Report -->
+            <section id="knowledge-feedback" class="page-section hidden space-y-6 animate-fade-in">
+                <div class="max-w-2xl mx-auto space-y-6">
+                    <div class="text-center space-y-2">
+                        <div class="inline-block p-3 bg-hhg-100 rounded-full text-hhg-600 mb-2">
+                            <i data-lucide="message-square-dashed" class="w-8 h-8"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-gray-900">查無依據回報</h2>
+                        <p class="text-sm text-gray-500">若 NotebookLM 無法回答您的問題，請在此回報。我們將自動指派任務給部門負責人更新 SOP。</p>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 space-y-6">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-2">無法找到答案的問題</label>
+                                <textarea rows="3"
+                                    class="w-full px-4 py-3 rounded-xl bg-gray-50 border border-transparent focus:bg-white focus:border-hhg-500 transition-all outline-none text-sm"
+                                    placeholder="請精確描述您詢問的問題..."></textarea>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">關聯部門</label>
+                                    <select
+                                        class="w-full px-4 py-2 rounded-xl bg-gray-50 border border-transparent focus:bg-white focus:border-hhg-500 transition-all outline-none text-sm">
+                                        <option>請選擇部門...</option>
+                                        <option>業務部</option>
+                                        <option>財務部</option>
+                                        <option>人資部</option>
+                                        <option>設計部</option>
+                                        <option>媒體部</option>
+                                        <option>物流管理部</option>
+                                        <option>經營管理部</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-gray-700 mb-2">緊急程度</label>
+                                    <select
+                                        class="w-full px-4 py-2 rounded-xl bg-gray-50 border border-transparent focus:bg-white focus:border-hhg-500 transition-all outline-none text-sm">
+                                        <option>一般 (預計 3 天內更新)</option>
+                                        <option>急件 (當日需釐清)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button onclick="alert('回報已提交！系統已自動建立任務並派發給該部門負責人。')"
+                            class="w-full py-3 bg-hhg-500 text-white font-bold rounded-xl hover:bg-hhg-600 shadow-lg shadow-hhg-200 transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="send" class="w-5 h-5"></i> 提交並派發任務
+                        </button>
+                    </div>
+
+                    <div class="p-4 bg-blue-50 rounded-xl border border-blue-100 flex gap-3 items-start">
+                        <i data-lucide="info" class="w-5 h-5 text-blue-500 mt-0.5"></i>
+                        <div class="text-[10px] text-blue-700 leading-relaxed">
+                            <span class="font-bold">處理機制：</span>系統將會分析您的提問，若確認 SOP 中確實缺漏，將會自動在「工作管理中心」建立一個類型為「SOP
+                            優化」的任務給對應部門主管。
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- 6. Approval Center -->
+            <section id="approval" class="page-section hidden space-y-6 animate-fade-in">
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    <!-- Sidebar Filters -->
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 h-fit lg:col-span-1">
+                        <button
+                            class="w-full bg-hhg-500 text-white font-bold py-2 rounded-lg mb-6 shadow-sm hover:bg-hhg-600 transition-colors">
+                            <i data-lucide="plus" class="inline w-4 h-4 mr-1"></i> 發起簽核
+                        </button>
+
+                        <nav class="space-y-1">
+                            <a href="#"
+                                class="flex items-center justify-between px-3 py-2 bg-hhg-50 text-hhg-700 rounded-lg text-sm font-bold">
+                                <span class="flex items-center gap-2"><i data-lucide="inbox" class="w-4 h-4"></i>
+                                    待我簽核</span>
+                                <span class="bg-hhg-200 text-hhg-800 text-xs px-2 py-0.5 rounded-full">3</span>
+                            </a>
+                            <a href="#"
+                                class="flex items-center justify-between px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg text-sm font-medium transition-colors">
+                                <span class="flex items-center gap-2"><i data-lucide="send" class="w-4 h-4"></i>
+                                    我發起的</span>
+                            </a>
+                            <a href="#"
+                                class="flex items-center justify-between px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg text-sm font-medium transition-colors">
+                                <span class="flex items-center gap-2"><i data-lucide="check-square" class="w-4 h-4"></i>
+                                    已處理</span>
+                            </a>
+                            <a href="#"
+                                class="flex items-center justify-between px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg text-sm font-medium transition-colors">
+                                <span class="flex items-center gap-2"><i data-lucide="copy" class="w-4 h-4"></i>
+                                    副本知會</span>
+                            </a>
+                        </nav>
+                    </div>
+
+                    <!-- Approval List -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 lg:col-span-3 overflow-hidden">
+                        <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                            <h3 class="font-bold text-gray-800">待簽核列表 (Pending)</h3>
+                            <button class="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"><i
+                                    data-lucide="filter" class="w-3 h-3"></i> 篩選</button>
+                        </div>
+                        <div class="divide-y divide-gray-100">
+                            <!-- Item 1 -->
+                            <div class="p-4 hover:bg-gray-50 transition-colors cursor-pointer group">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex gap-3">
+                                        <div
+                                            class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-sm">
+                                            PM</div>
+                                        <div>
+                                            <h4
+                                                class="text-sm font-bold text-gray-900 group-hover:text-hhg-600 transition-colors">
+                                                2026 Q1 新品上市行銷預算案</h4>
+                                            <p class="text-xs text-gray-500 mt-1">申請人：Marketing Manager |
+                                                單號：MK-20260105-01</p>
+                                        </div>
+                                    </div>
+                                    <span class="text-xs text-gray-400">2 hrs ago</span>
+                                </div>
+                                <div class="mt-3 pl-14 flex items-center justify-between">
+                                    <p class="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded inline-block">
+                                        總金額：$1,200,000</p>
+                                    <button
+                                        class="bg-white border border-gray-200 text-gray-600 text-xs px-3 py-1 rounded hover:bg-hhg-50 hover:text-hhg-600 transition-colors font-medium">查看詳情</button>
+                                </div>
+                            </div>
+                            <!-- Item 2 -->
+                            <div class="p-4 hover:bg-gray-50 transition-colors cursor-pointer group">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex gap-3">
+                                        <div
+                                            class="w-10 h-10 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-sm">
+                                            HR</div>
+                                        <div>
+                                            <h4
+                                                class="text-sm font-bold text-gray-900 group-hover:text-hhg-600 transition-colors">
+                                                一月份新進人員筆電採購申請</h4>
+                                            <p class="text-xs text-gray-500 mt-1">申請人：IT Admin | 單號：IT-20260105-03
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <span class="text-xs text-gray-400">Yesterday</span>
+                                </div>
+                                <div class="mt-3 pl-14 flex items-center justify-between">
+                                    <p class="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded inline-block">
+                                        品項：MacBook Air M3 * 2</p>
+                                    <button
+                                        class="bg-white border border-gray-200 text-gray-600 text-xs px-3 py-1 rounded hover:bg-hhg-50 hover:text-hhg-600 transition-colors font-medium">查看詳情</button>
+                                </div>
+                            </div>
+                            <!-- Item 3 -->
+                            <div class="p-4 hover:bg-gray-50 transition-colors cursor-pointer group">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex gap-3">
+                                        <div
+                                            class="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center font-bold text-sm">
+                                            SA</div>
+                                        <div>
+                                            <h4
+                                                class="text-sm font-bold text-gray-900 group-hover:text-hhg-600 transition-colors">
+                                                momo 38 檔期折價券設定審核</h4>
+                                            <p class="text-xs text-gray-500 mt-1">申請人：Sales Rep | 單號：SA-20260104-09
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <span class="text-xs text-gray-400">2 days ago</span>
+                                </div>
+                                <div class="mt-3 pl-14 flex items-center justify-between">
+                                    <p class="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded inline-block">
+                                        折扣：滿$1000折$100</p>
+                                    <button
+                                        class="bg-white border border-gray-200 text-gray-600 text-xs px-3 py-1 rounded hover:bg-hhg-50 hover:text-hhg-600 transition-colors font-medium">查看詳情</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- 7. Logistics & CS -->
+            <section id="logistics" class="page-section hidden space-y-6 animate-fade-in">
+                <!-- Top Metrics -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                        <p class="text-xs text-gray-500 font-medium uppercase">待出貨訂單</p>
+                        <h3 class="text-2xl font-bold text-orange-500 mt-1">324</h3>
+                        <p class="text-[10px] text-gray-400 mt-1">需於今日完成</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                        <p class="text-xs text-gray-500 font-medium uppercase">配送異動</p>
+                        <h3 class="text-2xl font-bold text-red-500 mt-1">12</h3>
+                        <p class="text-[10px] text-red-400 mt-1">延遲/遺失</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                        <p class="text-xs text-gray-500 font-medium uppercase">待回覆客訴</p>
+                        <h3 class="text-2xl font-bold text-hhg-600 mt-1">5</h3>
+                        <p class="text-[10px] text-gray-400 mt-1">Avg Response: 2h</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+                        <p class="text-xs text-gray-500 font-medium uppercase">退貨率</p>
+                        <h3 class="text-2xl font-bold text-green-600 mt-1">1.2%</h3>
+                        <p class="text-[10px] text-green-600 mt-1">-0.3% vs Last Week</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Order Status -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                            <h3 class="font-bold text-gray-800 flex items-center gap-2">
+                                <i data-lucide="truck" class="w-4 h-4 text-hhg-600"></i> 物流監控 (Logistics)
+                            </h3>
+                            <button class="text-xs text-gray-500 hover:text-gray-700">Refresh</button>
+                        </div>
+                        <div class="p-4 space-y-4">
+                            <!-- Order Item -->
+                            <div class="flex items-center justify-between p-3 border border-gray-100 rounded-lg">
+                                <div class="flex items-center gap-3">
+                                    <div class="bg-gray-100 p-2 rounded">
+                                        <i data-lucide="package" class="w-5 h-5 text-gray-500"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-bold text-gray-900">Order #20240105-001</p>
+                                        <p class="text-xs text-gray-500">Momo • 台中市西屯區</p>
+                                    </div>
+                                </div>
+                                <span
+                                    class="bg-yellow-100 text-yellow-700 text-xs px-2 py-1 rounded font-bold">撿貨中</span>
+                            </div>
+                            <!-- Order Item -->
+                            <div class="flex items-center justify-between p-3 border border-gray-100 rounded-lg">
+                                <div class="flex items-center gap-3">
+                                    <div class="bg-gray-100 p-2 rounded">
+                                        <i data-lucide="package" class="w-5 h-5 text-gray-500"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-bold text-gray-900">Order #20240105-042</p>
+                                        <p class="text-xs text-gray-500">Shopee • 台北市中山區</p>
+                                    </div>
+                                </div>
+                                <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold">配送中</span>
+                            </div>
+                            <!-- Order Item -->
+                            <div class="flex items-center justify-between p-3 border border-gray-100 rounded-lg">
+                                <div class="flex items-center gap-3">
+                                    <div class="bg-red-50 p-2 rounded">
+                                        <i data-lucide="alert-triangle" class="w-5 h-5 text-red-500"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-bold text-gray-900">Order #20240103-156</p>
+                                        <p class="text-xs text-gray-500">Official • 高雄市三民區</p>
+                                    </div>
+                                </div>
+                                <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded font-bold">配送異常</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Customer Service -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                            <h3 class="font-bold text-gray-800 flex items-center gap-2">
+                                <i data-lucide="message-circle" class="w-4 h-4 text-hhg-600"></i> 客服中心 (CS)
+                            </h3>
+                            <button class="text-xs text-gray-500 hover:text-gray-700">Open Panel</button>
+                        </div>
+                        <div class="p-4 space-y-4">
+                            <!-- CS Ticket -->
+                            <div class="flex gap-3 p-3 bg-gray-50 rounded-lg">
+                                <div
+                                    class="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-xs shrink-0">
+                                    C</div>
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-start">
+                                        <h4 class="text-sm font-bold text-gray-900">收到商品有破損</h4>
+                                        <span class="text-[10px] text-gray-400">15m ago</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600 mt-1 line-clamp-2">客人表示 Persil 洗衣精瓶蓋裂開，漏出約
+                                        1/3，要求換貨。
+                                    </p>
+                                    <div class="mt-2 flex gap-2">
+                                        <button
+                                            class="bg-white border border-gray-200 text-xs px-2 py-1 rounded text-gray-600 hover:bg-hhg-50 hover:text-hhg-600 transition-colors">回覆</button>
+                                        <button
+                                            class="bg-white border border-gray-200 text-xs px-2 py-1 rounded text-gray-600 hover:bg-hhg-50 hover:text-hhg-600 transition-colors">安撫與補償
+                                            SOP</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- CS Ticket -->
+                            <div class="flex gap-3 p-3 bg-gray-50 rounded-lg">
+                                <div
+                                    class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs shrink-0">
+                                    Q</div>
+                                <div class="flex-1">
+                                    <div class="flex justify-between items-start">
+                                        <h4 class="text-sm font-bold text-gray-900">詢問 Bref 效期</h4>
+                                        <span class="text-[10px] text-gray-400">45m ago</span>
+                                    </div>
+                                    <p class="text-xs text-gray-600 mt-1 line-clamp-2">請問現在下單的 Bref 馬桶球製造日期是什麼時候？
+                                    </p>
+                                    <div class="mt-2 flex gap-2">
+                                        <button
+                                            class="bg-white border border-gray-200 text-xs px-2 py-1 rounded text-gray-600 hover:bg-hhg-50 hover:text-hhg-600 transition-colors">回覆</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- 8. Design Department -->
+            <section id="design" class="page-section hidden space-y-6 animate-fade-in">
+                <!-- Banner / Header -->
+                <div
+                    class="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl p-8 text-white flex justify-between items-end shadow-lg">
+                    <div>
+                        <h2 class="text-3xl font-bold mb-2">創意設計中心</h2>
+                        <p class="opacity-90">Design Requests & Asset Management</p>
+                    </div>
+                    <button
+                        class="bg-white text-purple-600 px-4 py-2 rounded-lg font-bold shadow-md hover:bg-gray-50 transition-colors">
+                        <i data-lucide="upload-cloud" class="inline w-4 h-4 mr-1"></i> 上傳素材
+                    </button>
+                </div>
+
+                <!-- Asset Gallery -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Asset Card 1 -->
+                    <div
+                        class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden group hover:shadow-md transition-shadow">
+                        <div class="h-40 bg-gray-200 relative overflow-hidden">
+                            <!-- Placeholder Image -->
+                            <div class="absolute inset-0 flex items-center justify-center text-gray-400 bg-gray-100">
+                                <i data-lucide="image" class="w-12 h-12 opacity-50"></i>
+                            </div>
+                            <div
+                                class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                                <button
+                                    class="bg-white text-gray-800 p-2 rounded-full shadow-lg mx-1 hover:scale-110 transition-transform"><i
+                                        data-lucide="eye" class="w-4 h-4"></i></button>
+                                <button
+                                    class="bg-white text-gray-800 p-2 rounded-full shadow-lg mx-1 hover:scale-110 transition-transform"><i
+                                        data-lucide="download" class="w-4 h-4"></i></button>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <h4 class="font-bold text-gray-800 truncate">2026_CNY_Main_Banner.jpg</h4>
+                            <p class="text-xs text-gray-500 mt-1">1920x1080 • 2.4MB</p>
+                            <div class="mt-3 flex gap-2">
+                                <span
+                                    class="bg-purple-100 text-purple-700 text-[10px] px-2 py-0.5 rounded font-bold">Official</span>
+                                <span
+                                    class="bg-red-100 text-red-700 text-[10px] px-2 py-0.5 rounded font-bold">CNY</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Asset Card 2 -->
+                    <div
+                        class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden group hover:shadow-md transition-shadow">
+                        <div class="h-40 bg-gray-200 relative overflow-hidden">
+                            <!-- Placeholder Image -->
+                            <div class="absolute inset-0 flex items-center justify-center text-gray-400 bg-gray-100">
+                                <i data-lucide="image" class="w-12 h-12 opacity-50"></i>
+                            </div>
+                            <div
+                                class="absolute top-2 right-2 bg-yellow-400 text-white text-[10px] font-bold px-2 py-1 rounded shadow-sm">
+                                AI Gen</div>
+                            <div
+                                class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                                <button
+                                    class="bg-white text-gray-800 p-2 rounded-full shadow-lg mx-1 hover:scale-110 transition-transform"><i
+                                        data-lucide="eye" class="w-4 h-4"></i></button>
+                                <button
+                                    class="bg-white text-gray-800 p-2 rounded-full shadow-lg mx-1 hover:scale-110 transition-transform"><i
+                                        data-lucide="download" class="w-4 h-4"></i></button>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <h4 class="font-bold text-gray-800 truncate">Persil_Product_Shot_v2.png</h4>
+                            <p class="text-xs text-gray-500 mt-1">1080x1080 • 4.1MB</p>
+                            <div class="mt-3 flex gap-2">
+                                <span
+                                    class="bg-pink-100 text-pink-700 text-[10px] px-2 py-0.5 rounded font-bold">Momo</span>
+                                <span
+                                    class="bg-green-100 text-green-700 text-[10px] px-2 py-0.5 rounded font-bold">Product</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Add New Card -->
+                    <div
+                        class="bg-gray-50 rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 hover:text-purple-500 hover:border-purple-300 hover:bg-purple-50 transition-all cursor-pointer h-full min-h-[250px]">
+                        <i data-lucide="folder-plus" class="w-12 h-12 mb-2"></i>
+                        <span class="font-bold text-sm">Create New Folder</span>
+                    </div>
+                </div>
+            </section>
+            <!-- 9. Media Department -->
+            <section id="media" class="page-section hidden space-y-6 animate-fade-in">
+                <!-- Media Dashboard -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Left: Budget Overview -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 md:col-span-1">
+                        <h3 class="font-bold text-gray-800 mb-4">本月廣告投放預算</h3>
+                        <div class="relative w-48 h-48 mx-auto">
+                            <!-- Simple Pie Chart CSS/SVG could go here, for now using text/numbers -->
+                            <div
+                                class="w-full h-full rounded-full border-[12px] border-gray-100 flex items-center justify-center relative">
+                                <svg class="absolute inset-0 w-full h-full -rotate-90">
+                                    <circle cx="96" cy="96" r="84" fill="transparent" stroke="#3b82f6" stroke-width="12"
+                                        stroke-dasharray="400" stroke-dashoffset="100"></circle>
+                                </svg>
+                                <div class="text-center">
+                                    <span class="block text-2xl font-bold text-gray-900">75%</span>
+                                    <span class="text-xs text-gray-500">Used</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 space-y-3">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600 flex items-center gap-2"><span
+                                        class="w-3 h-3 rounded-full bg-blue-500"></span> Facebook / IG</span>
+                                <span class="font-bold">$450,000</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600 flex items-center gap-2"><span
+                                        class="w-3 h-3 rounded-full bg-red-500"></span> Google Ads</span>
+                                <span class="font-bold">$320,000</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600 flex items-center gap-2"><span
+                                        class="w-3 h-3 rounded-full bg-hhg-500"></span> Shopee Ads</span>
+                                <span class="font-bold">$120,000</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Active Campaigns -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 md:col-span-2">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="font-bold text-gray-800">執行中廣告活動 (Active Campaigns)</h3>
+                            <button class="text-hhg-600 font-bold text-sm hover:underline">View All</button>
+                        </div>
+
+                        <div class="space-y-4">
+                            <!-- Campaign 1 -->
+                            <div class="border border-gray-200 rounded-lg p-4 relative overflow-hidden">
+                                <div class="absolute left-0 top-0 bottom-0 w-1 bg-green-500"></div>
+                                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                    <div>
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <span
+                                                class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded">META</span>
+                                            <h4 class="font-bold text-gray-900">2026 CNF Persil Conversion</h4>
+                                        </div>
+                                        <p class="text-xs text-gray-500">Audience: F 25-45, Interests: Home/Cleaning
+                                        </p>
+                                    </div>
+                                    <div class="flex gap-8 text-right">
+                                        <div>
+                                            <p class="text-[10px] text-gray-400 uppercase">ROAS</p>
+                                            <p class="font-bold text-green-600">4.2</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-[10px] text-gray-400 uppercase">Spend</p>
+                                            <p class="font-bold text-gray-900">$24,500</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-[10px] text-gray-400 uppercase">Impr</p>
+                                            <p class="font-bold text-gray-900">125k</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Campaign 2 -->
+                            <div class="border border-gray-200 rounded-lg p-4 relative overflow-hidden">
+                                <div class="absolute left-0 top-0 bottom-0 w-1 bg-yellow-500"></div>
+                                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                    <div>
+                                        <div class="flex items-center gap-2 mb-1">
+                                            <span
+                                                class="bg-orange-100 text-orange-800 text-[10px] font-bold px-2 py-0.5 rounded">Shopee</span>
+                                            <h4 class="font-bold text-gray-900">Shopee Keyword Ads - Persil</h4>
+                                        </div>
+                                        <p class="text-xs text-gray-500">Keywords: 洗衣精, 德國, 寶瀅</p>
+                                    </div>
+                                    <div class="flex gap-8 text-right">
+                                        <div>
+                                            <p class="text-[10px] text-gray-400 uppercase">ROAS</p>
+                                            <p class="font-bold text-yellow-600">6.8</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-[10px] text-gray-400 uppercase">Spend</p>
+                                            <p class="font-bold text-gray-900">$8,200</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-[10px] text-gray-400 uppercase">Clicks</p>
+                                            <p class="font-bold text-gray-900">4,210</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- 10. Finance Department -->
+            <section id="finance" class="page-section hidden space-y-6 animate-fade-in">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Metric Card -->
+                    <div
+                        class="bg-white top-border-green p-6 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-green-500"></div>
+                        <p class="text-xs text-gray-500 font-bold uppercase">本月淨利 (Net Profit)</p>
+                        <h3 class="text-2xl font-bold text-gray-900 mt-2">$242,500</h3>
+                        <p class="text-xs text-green-600 mt-2 font-bold">+5.4% YoY</p>
+                    </div>
+                    <!-- Metric Card -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-red-500"></div>
+                        <p class="text-xs text-gray-500 font-bold uppercase">應付帳款 (AP)</p>
+                        <h3 class="text-2xl font-bold text-gray-900 mt-2">$180,000</h3>
+                        <p class="text-xs text-gray-500 mt-2">Due in 7 days</p>
+                    </div>
+                    <!-- Metric Card -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-blue-500"></div>
+                        <p class="text-xs text-gray-500 font-bold uppercase">應收帳款 (AR)</p>
+                        <h3 class="text-2xl font-bold text-gray-900 mt-2">$450,200</h3>
+                        <p class="text-xs text-gray-500 mt-2">Current</p>
+                    </div>
+                    <!-- Metric Card -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-hhg-500"></div>
+                        <p class="text-xs text-gray-500 font-bold uppercase">預算執行率</p>
+                        <h3 class="text-2xl font-bold text-gray-900 mt-2">42%</h3>
+                        <p class="text-xs text-gray-500 mt-2">Q1 Progress</p>
+                    </div>
+                </div>
+
+                <!-- Recent Transactions -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                        <h3 class="font-bold text-gray-800">近期交易紀錄 (Recent Transactions)</h3>
+                        <button
+                            class="bg-indigo-50 text-indigo-600 px-3 py-1 rounded-lg text-xs font-bold hover:bg-indigo-100 transition-colors">Download
+                            Report</button>
+                    </div>
+                    <table class="w-full text-sm text-left text-gray-500">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3">Date</th>
+                                <th class="px-6 py-3">Description</th>
+                                <th class="px-6 py-3">Category</th>
+                                <th class="px-6 py-3 text-right">Amount</th>
+                                <th class="px-6 py-3 text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="bg-white border-b hover:bg-gray-50">
+                                <td class="px-6 py-4">Jan 04, 2026</td>
+                                <td class="px-6 py-4 font-medium text-gray-900">Facebook Ads Payment</td>
+                                <td class="px-6 py-4"><span
+                                        class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-xs">Advertisment</span>
+                                </td>
+                                <td class="px-6 py-4 text-right">-$5,240.00</td>
+                                <td class="px-6 py-4 text-center"><span
+                                        class="text-green-600 font-bold text-xs">Completed</span></td>
+                            </tr>
+                            <tr class="bg-white border-b hover:bg-gray-50">
+                                <td class="px-6 py-4">Jan 04, 2026</td>
+                                <td class="px-6 py-4 font-medium text-gray-900">Momo 12月貨款入帳</td>
+                                <td class="px-6 py-4"><span
+                                        class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-xs">Income</span>
+                                </td>
+                                <td class="px-6 py-4 text-right text-green-600 font-bold">+$1,250,500.00</td>
+                                <td class="px-6 py-4 text-center"><span
+                                        class="text-green-600 font-bold text-xs">Completed</span></td>
+                            </tr>
+                            <tr class="bg-white border-b hover:bg-gray-50">
+                                <td class="px-6 py-4">Jan 03, 2026</td>
+                                <td class="px-6 py-4 font-medium text-gray-900">Office Supplies (PChome)</td>
+                                <td class="px-6 py-4"><span
+                                        class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-xs">Operations</span>
+                                </td>
+                                <td class="px-6 py-4 text-right">-$350.00</td>
+                                <td class="px-6 py-4 text-center"><span
+                                        class="text-gray-400 font-bold text-xs">Pending</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <!-- 11. Management -->
+            <section id="management" class="page-section hidden space-y-6 animate-fade-in">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Real-time Strategy Map -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 lg:col-span-2">
+                        <div class="flex justify-between items-center mb-6">
+                            <div>
+                                <h3 class="font-bold text-gray-800 text-lg">全集團營運戰情室 (Group Strategy Map)</h3>
+                                <p class="text-sm text-gray-500">Real-time Performance against Annual Targets</p>
+                            </div>
+                            <span
+                                class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold animate-pulse">Live
+                                Updating</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
+                            <div class="p-4 bg-gray-50 rounded-lg">
+                                <p class="text-gray-500 text-xs uppercase mb-1">年度達成率 (YTD)</p>
+                                <div class="relative w-32 h-32 mx-auto flex items-center justify-center">
+                                    <svg class="absolute inset-0 w-full h-full -rotate-90">
+                                        <circle cx="64" cy="64" r="56" fill="transparent" stroke="#e5e7eb"
+                                            stroke-width="8">
+                                        </circle>
+                                        <circle cx="64" cy="64" r="56" fill="transparent" stroke="#ffc107"
+                                            stroke-width="8" stroke-dasharray="351" stroke-dashoffset="35"></circle>
+                                    </svg>
+                                    <span class="text-2xl font-bold text-gray-900">90%</span>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-gray-50 rounded-lg flex flex-col justify-center">
+                                <p class="text-gray-500 text-xs uppercase mb-2">總業績 (Revenue)</p>
+                                <h4 class="text-3xl font-bold text-gray-900">$128M</h4>
+                                <p class="text-green-600 text-xs font-bold mt-1">▲ 15% YoY</p>
+                            </div>
+                            <div class="p-4 bg-gray-50 rounded-lg flex flex-col justify-center">
+                                <p class="text-gray-500 text-xs uppercase mb-2">毛利率 (Gross Margin)</p>
+                                <h4 class="text-3xl font-bold text-gray-900">38.5%</h4>
+                                <p class="text-red-500 text-xs font-bold mt-1">▼ 1.2% Target</p>
+                            </div>
+                            <div class="p-4 bg-gray-50 rounded-lg flex flex-col justify-center">
+                                <p class="text-gray-500 text-xs uppercase mb-2">淨利率 (Net Margin)</p>
+                                <h4 class="text-3xl font-bold text-gray-900">12.4%</h4>
+                                <p class="text-green-600 text-xs font-bold mt-1">▲ 0.5% Target</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Leaderboard -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i data-lucide="trophy" class="w-5 h-5 text-yellow-500"></i> MVP 排行榜
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="w-8 h-8 flex items-center justify-center font-bold text-yellow-500 italic text-xl">
+                                    1</div>
+                                <div class="flex-1">
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-bold text-gray-900">Sales A</span>
+                                        <span class="text-xs text-gray-500">120% Target</span>
+                                    </div>
+                                    <div class="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                        <div class="h-full bg-yellow-400" style="width: 100%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="w-8 h-8 flex items-center justify-center font-bold text-gray-400 italic text-xl">
+                                    2</div>
+                                <div class="flex-1">
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-bold text-gray-900">Sales C</span>
+                                        <span class="text-xs text-gray-500">105% Target</span>
+                                    </div>
+                                    <div class="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                        <div class="h-full bg-gray-400" style="width: 85%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="w-8 h-8 flex items-center justify-center font-bold text-orange-400 italic text-xl">
+                                    3</div>
+                                <div class="flex-1">
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-bold text-gray-900">Sales B</span>
+                                        <span class="text-xs text-gray-500">98% Target</span>
+                                    </div>
+                                    <div class="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                        <div class="h-full bg-orange-400" style="width: 78%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Risk Radar -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 lg:col-span-2">
+                        <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i data-lucide="radar" class="w-5 h-5 text-red-500"></i> 風險雷達 (Risk Monitoring)
+                        </h3>
+                        <div class="space-y-3">
+                            <div
+                                class="flex items-center justify-between p-3 bg-red-50 border border-red-100 rounded-lg">
+                                <div class="flex items-center gap-3">
+                                    <i data-lucide="alert-octagon" class="w-5 h-5 text-red-500"></i>
+                                    <div>
+                                        <h4 class="text-sm font-bold text-gray-900">庫存水位過高Risk</h4>
+                                        <p class="text-xs text-gray-500">Pril 洗碗精庫存週轉天數 > 120天</p>
+                                    </div>
+                                </div>
+                                <button
+                                    class="text-xs bg-white border border-red-200 text-red-600 px-3 py-1 rounded hover:bg-red-100 font-bold">查看詳情</button>
+                            </div>
+                            <div
+                                class="flex items-center justify-between p-3 bg-yellow-50 border border-yellow-100 rounded-lg">
+                                <div class="flex items-center gap-3">
+                                    <i data-lucide="alert-triangle" class="w-5 h-5 text-yellow-600"></i>
+                                    <div>
+                                        <h4 class="text-sm font-bold text-gray-900">廣告費率異常</h4>
+                                        <p class="text-xs text-gray-500">Shopee 廣告 ROAS 低於 3.0 (Target: 5.0)</p>
+                                    </div>
+                                </div>
+                                <button
+                                    class="text-xs bg-white border border-yellow-200 text-yellow-600 px-3 py-1 rounded hover:bg-yellow-100 font-bold">查看詳情</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- 12. Notifications -->
+            <section id="notifications" class="page-section hidden space-y-6 animate-fade-in">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden max-w-4xl mx-auto">
+                    <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                        <h3 class="font-bold text-gray-800 flex items-center gap-2">
+                            <i data-lucide="bell" class="w-5 h-5 text-hhg-600"></i> 通知中心 (Notifications)
+                        </h3>
+                        <div class="flex gap-2">
+                            <button class="text-xs text-hhg-600 font-bold hover:underline">Mark all as read</button>
+                            <span class="text-gray-300">|</span>
+                            <button class="text-xs text-gray-500 hover:text-gray-700">Settings</button>
+                        </div>
+                    </div>
+                    <div class="divide-y divide-gray-100">
+                        <!-- Unread Notification -->
+                        <div class="p-4 bg-blue-50/50 hover:bg-blue-50 transition-colors cursor-pointer flex gap-4">
+                            <div class="mt-1">
+                                <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-bold text-gray-900">系統公告：2/10 凌晨 2:00 進行系統維護</p>
+                                <p class="text-xs text-gray-600 mt-1">預計停機 2 小時，請提前發布社群公告。</p>
+                                <p class="text-[10px] text-gray-400 mt-2">IT Dept • 10 mins ago</p>
+                            </div>
+                        </div>
+                        <!-- Notification -->
+                        <div class="p-4 hover:bg-gray-50 transition-colors cursor-pointer flex gap-4">
+                            <div class="mt-1">
+                                <div class="w-2 h-2 bg-transparent rounded-full"></div>
+                            </div>
+                            <div
+                                class="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center shrink-0">
+                                <i data-lucide="check-circle" class="w-5 h-5"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-bold text-gray-900">簽核通過：一月份新進人員採購申請</p>
+                                <p class="text-xs text-gray-600 mt-1">總經理已核准您的採購申請單 (IT-20260105-03)。</p>
+                                <p class="text-[10px] text-gray-400 mt-2">Approval System • 1 hour ago</p>
+                            </div>
+                        </div>
+                        <!-- Notification -->
+                        <div class="p-4 hover:bg-gray-50 transition-colors cursor-pointer flex gap-4">
+                            <div class="mt-1">
+                                <div class="w-2 h-2 bg-transparent rounded-full"></div>
+                            </div>
+                            <div
+                                class="w-10 h-10 rounded-full bg-red-100 text-red-600 flex items-center justify-center shrink-0">
+                                <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-bold text-gray-900">庫存警示：Pril 洗碗精 低於安庫</p>
+                                <p class="text-xs text-gray-600 mt-1">目前庫存：42，建議補貨量：200。</p>
+                                <p class="text-[10px] text-gray-400 mt-2">Inventory System • 3 hours ago</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- 13. Settings / Users -->
+            <section id="settings" class="page-section hidden space-y-6 animate-fade-in">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 max-w-4xl mx-auto overflow-hidden">
+                    <div class="flex flex-col md:flex-row h-[600px]">
+                        <!-- Sidebar -->
+                        <div class="w-full md:w-64 bg-gray-50 border-r border-gray-200 p-4">
+                            <h3 class="font-bold text-gray-800 mb-6 px-2">設定 (Settings)</h3>
+                            <nav class="space-y-1">
+                                <button
+                                    class="w-full text-left px-3 py-2 bg-white shadow-sm rounded-lg text-sm font-bold text-hhg-600">
+                                    使用者與權限
+                                </button>
+                                <button
+                                    class="w-full text-left px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors">
+                                    系統偏好設定
+                                </button>
+                                <button
+                                    class="w-full text-left px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors">
+                                    通知設定
+                                </button>
+                                <button
+                                    class="w-full text-left px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg text-sm transition-colors">
+                                    API 與 整合
+                                </button>
+                            </nav>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="flex-1 p-8 overflow-y-auto">
+                            <div class="flex justify-between items-center mb-6">
+                                <h2 class="text-xl font-bold text-gray-900">使用者與權限管理</h2>
+                                <button
+                                    class="bg-hhg-500 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-hhg-600 transition-colors">新增使用者</button>
+                            </div>
+
+                            <div class="space-y-4">
+                                <!-- User Row -->
+                                <div
+                                    class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                                    <div class="flex items-center gap-4">
+                                        <div
+                                            class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold">
+                                            JM</div>
+                                        <div>
+                                            <p class="font-bold text-gray-900">John Manager</p>
+                                            <p class="text-xs text-gray-500">john.m@hhg.com</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-4">
+                                        <span
+                                            class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold">Admin</span>
+                                        <button class="text-gray-400 hover:text-gray-600"><i data-lucide="more-vertical"
+                                                class="w-4 h-4"></i></button>
+                                    </div>
+                                </div>
+                                <!-- User Row -->
+                                <div
+                                    class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                                    <div class="flex items-center gap-4">
+                                        <div
+                                            class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold">
+                                            AS</div>
+                                        <div>
+                                            <p class="font-bold text-gray-900">Alice Sales</p>
+                                            <p class="text-xs text-gray-500">alice.s@hhg.com</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-4">
+                                        <span
+                                            class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">Sales</span>
+                                        <button class="text-gray-400 hover:text-gray-600"><i data-lucide="more-vertical"
+                                                class="w-4 h-4"></i></button>
+                                    </div>
+                                </div>
+                                <!-- User Row -->
+                                <div
+                                    class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                                    <div class="flex items-center gap-4">
+                                        <div
+                                            class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold">
+                                            BD</div>
+                                        <div>
+                                            <p class="font-bold text-gray-900">Bob Design</p>
+                                            <p class="text-xs text-gray-500">bob.d@hhg.com</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-4">
+                                        <span
+                                            class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold">Designer</span>
+                                        <button class="text-gray-400 hover:text-gray-600"><i data-lucide="more-vertical"
+                                                class="w-4 h-4"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+    </main>
+
+    <!-- Quick Actions (Right Sidebar) -->
+    <aside class="w-16 border-l border-gray-200 bg-white flex flex-col items-center py-4 z-20 shrink-0">
+        <button
+            class="p-3 mb-4 rounded-xl bg-hhg-500 text-white shadow-lg shadow-hhg-500/30 hover:bg-hhg-600 transition-all transform hover:scale-105 tooltip-left"
+            title="新增任務">
+            <i data-lucide="plus" class="w-6 h-6"></i>
+        </button>
+
+        <div class="flex-1 w-full flex flex-col items-center gap-4">
+            <button class="p-2 text-gray-400 hover:text-hhg-600 hover:bg-gray-50 rounded-lg transition-colors"
+                title="AI 助手">
+                <i data-lucide="bot" class="w-6 h-6"></i>
+            </button>
+            <button class="p-2 text-gray-400 hover:text-hhg-600 hover:bg-gray-50 rounded-lg transition-colors"
+                title="日曆">
+                <i data-lucide="calendar" class="w-6 h-6"></i>
+            </button>
+        </div>
+    </aside>
+
+    <!-- AI Assistant Floating Window (Hidden by default) -->
+    <div id="aiAssistant"
+        class="fixed bottom-4 right-20 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 hidden flex-col z-50 overflow-hidden"
+        style="height: 500px;">
+        <div class="bg-hhg-500 text-white p-4 flex justify-between items-center">
+            <h3 class="font-bold flex items-center gap-2"><i data-lucide="sparkles" class="w-4 h-4"></i> AI 助手</h3>
+            <button class="hover:text-gray-100"><i data-lucide="x" class="w-4 h-4"></i></button>
+        </div>
+        <div class="flex-1 p-4 bg-gray-50 overflow-y-auto">
+            <div class="flex gap-2 mb-4">
+                <div class="w-8 h-8 rounded-full bg-hhg-100 flex items-center justify-center text-hhg-600 shrink-0">
+                    <i data-lucide="bot" class="w-4 h-4"></i>
+                </div>
+                <div
+                    class="bg-white p-3 rounded-lg rounded-tl-none shadow-sm text-sm text-gray-700 border border-gray-100">
+                    您好！我是您的企業助手。有什麼我可以幫您的嗎？
+                </div>
+            </div>
+        </div>
+        <div class="p-3 border-t border-gray-100 bg-white">
+            <input type="text" placeholder="輸入訊息..."
+                class="w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:ring-1 focus:ring-hhg-500">
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
