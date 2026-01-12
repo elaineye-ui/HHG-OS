@@ -45,6 +45,12 @@
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- SheetJS (xlsx) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <!-- Data Analysis Logic -->
+    <script src="data-analysis.js" defer></script>
+
     <!-- Custom Styles -->
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -92,7 +98,8 @@
                             class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">報表中心</a>
                     </li>
                     <li><a href="#" onclick="switchPage('dashboard-analysis', this)"
-                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">數據分析</a>
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">AI
+                            數據分析</a>
                     </li>
                 </ul>
             </div>
@@ -199,19 +206,16 @@
                     class="w-full flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg text-gray-600 hover:bg-hhg-50 hover:text-hhg-900 transition-colors bg-gray-100">
                     <div class="flex items-center gap-3">
                         <i data-lucide="file-signature" class="w-5 h-5"></i>
-                        <span class="truncate">簽核中心</span>
+                        <span class="truncate">簽核與內部系統</span>
                     </div>
                     <i data-lucide="chevron-down" class="w-4 h-4 text-gray-400 submenu-arrow rotate-180"></i>
                 </button>
                 <ul id="menu-approval" class="pl-11 mt-1 space-y-1">
-                    <li><a href="#" onclick="switchPage('approval-pending', this)"
-                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">待簽核文件</a>
+                    <li><a href="#" onclick="switchPage('approval-permission', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">審核申請單</a>
                     </li>
-                    <li><a href="#" onclick="switchPage('approval-history', this)"
-                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">已處理文件</a>
-                    </li>
-                    <li><a href="#" onclick="switchPage('approval-new', this)"
-                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">發起新申請</a>
+                    <li><a href="#" onclick="switchPage('approval-internal-systems', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-hhg-600 rounded-md px-2 hover:bg-gray-50">內部系統</a>
                     </li>
                 </ul>
             </div>
@@ -799,196 +803,365 @@
                 <div class="mb-6">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
-                            <h2 class="text-2xl font-bold text-gray-800">AI 數據解讀中心</h2>
+                            <h2 class="text-2xl font-bold text-gray-800">AI 數據分析</h2>
                             <p class="text-sm text-gray-500 mt-1">選擇數據範圍，讓 AI 為您挖掘背後的洞察與建議。</p>
                         </div>
                     </div>
 
-                    <!-- Filter Bar -->
-                    <div class="mt-6 glass p-4 rounded-xl shadow-sm flex flex-wrap gap-4 items-end">
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-gray-600">品牌 (Brand)</label>
-                            <select id="analysisBrand"
-                                class="block w-40 pl-3 pr-10 py-2 text-sm border-gray-300 focus:outline-none focus:ring-hhg-500 focus:border-hhg-500 sm:text-sm rounded-md shadow-sm">
-                                <option>全品牌</option>
-                                <option>Persil</option>
-                                <option>Bref</option>
-                                <option>Pril</option>
-                            </select>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-gray-600">通路 (Platform)</label>
-                            <select id="analysisPlatform"
-                                class="block w-40 pl-3 pr-10 py-2 text-sm border-gray-300 focus:outline-none focus:ring-hhg-500 focus:border-hhg-500 sm:text-sm rounded-md shadow-sm">
-                                <option>全通路</option>
-                                <option>Momo</option>
-                                <option>Shopee</option>
-                                <option>PChome</option>
-                            </select>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-xs font-bold text-gray-600">比較區間 (Date Range)</label>
-                            <div class="flex items-center gap-2">
-                                <input type="date"
-                                    class="block w-36 pl-3 pr-2 py-2 text-sm border-gray-300 focus:outline-none focus:ring-hhg-500 focus:border-hhg-500 rounded-md shadow-sm"
-                                    value="2024-01-01">
-                                <span class="text-gray-400">-</span>
-                                <input type="date"
-                                    class="block w-36 pl-3 pr-2 py-2 text-sm border-gray-300 focus:outline-none focus:ring-hhg-500 focus:border-hhg-500 rounded-md shadow-sm"
-                                    value="2024-01-07">
+                    <!-- Filter Bar (Dynamic) -->
+                    <div class="mt-6 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
+
+                            <!-- Import Data -->
+                            <div class="space-y-1">
+                                <label class="text-xs font-bold text-gray-600">匯入數據 (Import Excel)</label>
+                                <input type="file" id="analysisFileImport" accept=".xlsx, .xls"
+                                    class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-hhg-50 file:text-hhg-700 hover:file:bg-hhg-100 cursor-pointer">
                             </div>
+
+                            <!-- API Key Settings -->
+                            <div class="space-y-1 lg:col-span-2">
+                                <label class="text-xs font-bold text-gray-600">Gemini API Key</label>
+                                <div class="flex items-center gap-3">
+                                    <div class="relative flex-1">
+                                        <i data-lucide="key" class="absolute left-3 top-2.5 w-4 h-4 text-gray-400"></i>
+                                        <input type="password" id="geminiApiKeyInput"
+                                            class="block w-full pl-9 pr-3 py-2 text-sm border-gray-300 focus:outline-none focus:ring-hhg-500 focus:border-hhg-500 rounded-md shadow-sm"
+                                            placeholder="輸入 Gemini API Key...">
+                                    </div>
+                                    <label class="flex items-center gap-2 cursor-pointer whitespace-nowrap">
+                                        <input type="checkbox" id="saveKeyCheckbox"
+                                            class="rounded text-hhg-600 focus:ring-hhg-500">
+                                        <span class="text-xs text-gray-600">記住金鑰</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Filters (shown after import) -->
+                        <div id="dynamicFilters" class="hidden mt-6 pt-6 border-t border-gray-200">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <!-- Platform Filter -->
+                                <div class="space-y-2">
+                                    <label class="text-xs font-bold text-gray-600 flex items-center gap-2">
+                                        <i data-lucide="store" class="w-3 h-3"></i>
+                                        通路 (Platform)
+                                    </label>
+                                    <div id="platformFilterOptions"
+                                        class="space-y-1 max-h-32 overflow-y-auto border border-gray-200 rounded-md p-2 bg-gray-50">
+                                        <!-- Populated dynamically -->
+                                    </div>
+                                </div>
+
+                                <!-- Brand Filter -->
+                                <div class="space-y-2">
+                                    <label class="text-xs font-bold text-gray-600 flex items-center gap-2">
+                                        <i data-lucide="tag" class="w-3 h-3"></i>
+                                        品牌 (Brand)
+                                    </label>
+                                    <div id="brandFilterOptions"
+                                        class="space-y-1 max-h-32 overflow-y-auto border border-gray-200 rounded-md p-2 bg-gray-50">
+                                        <!-- Populated dynamically -->
+                                    </div>
+                                </div>
+
+                                <!-- Date Range Filter -->
+                                <div class="space-y-2">
+                                    <label class="text-xs font-bold text-gray-600 flex items-center gap-2">
+                                        <i data-lucide="calendar" class="w-3 h-3"></i>
+                                        日期區間 (Date Range)
+                                    </label>
+                                    <div class="flex flex-col gap-2">
+                                        <input type="date" id="filterDateFrom"
+                                            class="block w-full pl-3 pr-2 py-1.5 text-xs border-gray-300 focus:outline-none focus:ring-hhg-500 focus:border-hhg-500 rounded-md shadow-sm">
+                                        <input type="date" id="filterDateTo"
+                                            class="block w-full pl-3 pr-2 py-1.5 text-xs border-gray-300 focus:outline-none focus:ring-hhg-500 focus:border-hhg-500 rounded-md shadow-sm">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Filter Action Buttons -->
+                            <div class="mt-4 flex justify-end gap-2">
+                                <button onclick="resetDataFilters()"
+                                    class="px-4 py-2 text-xs font-medium text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+                                    重置篩選
+                                </button>
+                                <button onclick="applyDataFilters()"
+                                    class="px-4 py-2 text-xs font-medium text-white bg-hhg-600 rounded-lg hover:bg-hhg-700 transition-colors flex items-center gap-2">
+                                    <i data-lucide="filter" class="w-3 h-3"></i>
+                                    套用篩選
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Analyze Button -->
+                        <div class="mt-6 flex justify-center">
+                            <button onclick="startFullAnalysis()"
+                                class="bg-hhg-600 text-white px-5 py-2 rounded-lg shadow-md hover:bg-hhg-700 font-bold flex items-center gap-2">
+                                <i data-lucide="play-circle" class="w-4 h-4"></i> 執行全部分析
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Chat Input Area -->
-                <div
-                    class="bg-white rounded-2xl shadow-premium p-6 mb-8 border border-gray-100 relative overflow-hidden group">
-                    <div class="absolute top-0 left-0 w-1 h-full bg-hhg-500"></div>
-                    <div class="flex gap-4">
-                        <div class="mt-1">
+                <!-- Tabs Navigation -->
+                <div class="mb-6 border-b border-gray-200">
+                    <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="analysisTabs">
+                        <li class="me-2">
+                            <button onclick="switchAnalysisTab('module-1')" id="tab-module-1"
+                                class="inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 active-tab text-hhg-600 border-hhg-600">
+                                <i data-lucide="package" class="w-4 h-4 inline mb-0.5 mr-1"></i> 單商品分析 (帶貨王)
+                            </button>
+                        </li>
+                        <li class="me-2">
+                            <button onclick="switchAnalysisTab('module-2')" id="tab-module-2"
+                                class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-gray-500">
+                                <i data-lucide="layers" class="w-4 h-4 inline mb-0.5 mr-1"></i> 搭配購買分析 (加購策劃)
+                            </button>
+                        </li>
+                        <li class="me-2">
+                            <button onclick="switchAnalysisTab('module-3')" id="tab-module-3"
+                                class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-gray-500">
+                                <i data-lucide="pie-chart" class="w-4 h-4 inline mb-0.5 mr-1"></i> 訂單模式分析 (行為判斷)
+                            </button>
+                        </li>
+                        <li class="me-2">
+                            <button onclick="switchAnalysisTab('module-4')" id="tab-module-4"
+                                class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 text-gray-500">
+                                <i data-lucide="users" class="w-4 h-4 inline mb-0.5 mr-1"></i> 重複購買分析 (忠誠度)
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Tab Contents -->
+                <div id="analysisTabContents">
+
+                    <!-- Module 1: Single Product (Best Seller) -->
+                    <div id="module-1" class="analysis-module animate-fade-in space-y-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <!-- Data Card -->
+                            <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                                <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                    <span class="bg-blue-100 text-blue-600 p-1.5 rounded-lg"><i data-lucide="crown"
+                                            class="w-5 h-5"></i></span>
+                                    銷售冠軍 (Top SKU)
+                                </h3>
+                                <div id="m1-content" class="space-y-4">
+                                    <div class="animate-pulse flex space-x-4">
+                                        <div class="flex-1 space-y-4 py-1">
+                                            <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+                                            <div class="space-y-2">
+                                                <div class="h-4 bg-gray-200 rounded"></div>
+                                                <div class="h-4 bg-gray-200 rounded w-5/6"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="text-sm text-gray-400">請匯入資料並點擊「執行全部分析」...</div>
+                                </div>
+
+                                <!-- Logic Explanation -->
+                                <div class="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                                    <p class="text-[10px] font-bold text-gray-400 mb-1 flex items-center gap-1">
+                                        <i data-lucide="info" class="w-3 h-3"></i> 計算邏輯說明
+                                    </p>
+                                    <div class="grid grid-cols-2 gap-2 text-[10px] text-gray-500">
+                                        <div>
+                                            <span class="font-bold text-gray-600 block">對應 EXCEL 欄位:</span>
+                                            <ul class="list-disc pl-3">
+                                                <li>原始商品SKU (OriginalItemSKU)</li>
+                                                <li>數量 (QTY) / 新計算金額 (NewAmount)</li>
+                                                <li>主訂單編號 (MainOrderNumber)</li>
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <span class="font-bold text-gray-600 block">演算公式:</span>
+                                            <ul class="list-disc pl-3">
+                                                <li>排名：依據選定維度加總後排序。</li>
+                                                <li>單買率：(僅含此品項的訂單數 / 此品項總訂單數) %</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Gemini Insight -->
                             <div
-                                class="w-10 h-10 rounded-full bg-hhg-100 flex items-center justify-center text-hhg-600">
-                                <i data-lucide="sparkles" class="w-5 h-5"></i>
-                            </div>
-                        </div>
-                        <div class="flex-1">
-                            <label class="block text-sm font-bold text-gray-700 mb-2">想分析什麼問題？</label>
-                            <textarea id="aiAnalysisInput" rows="2"
-                                class="w-full border-0 bg-gray-50 rounded-xl p-4 text-gray-800 focus:ring-2 focus:ring-hhg-500 focus:bg-white transition-all resize-none shadow-inner"
-                                placeholder="例如：為什麼本週 Persil 在 Momo 的銷量下滑？..."></textarea>
-
-                            <div class="flex justify-end mt-3">
-                                <button onclick="performAiAnalysis()"
-                                    class="bg-hhg-500 hover:bg-hhg-600 text-white px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all flex items-center gap-2 font-medium active:scale-95">
-                                    <i data-lucide="zap" class="w-4 h-4"></i>
-                                    開始 AI 分析
-                                </button>
+                                class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl shadow-inner border border-indigo-100 p-6">
+                                <div class="flex items-center gap-2 mb-3 text-indigo-700 font-bold">
+                                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                                    <span>AI 顧問洞察</span>
+                                </div>
+                                <div id="m1-insight"
+                                    class="text-sm text-gray-700 leading-relaxed space-y-3 min-h-[150px]">
+                                    等待分析數據...
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Analysis Result (Initially Hidden) -->
-                <div id="aiAnalysisResult" class="hidden animate-fade-in space-y-6">
+                    <!-- Module 2: Bundle Analysis -->
+                    <div id="module-2" class="analysis-module hidden animate-fade-in space-y-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <!-- Data Card -->
+                            <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                                <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                    <span class="bg-green-100 text-green-600 p-1.5 rounded-lg"><i data-lucide="link"
+                                            class="w-5 h-5"></i></span>
+                                    最佳搭配組合 (Top Bundles)
+                                </h3>
+                                <div id="m2-content" class="space-y-4">
+                                    <div class="text-sm text-gray-400">請匯入資料並點擊「執行全部分析」...</div>
+                                </div>
 
-                    <!-- 1. Executive Summary -->
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex items-start gap-4">
-                        <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center shrink-0">
-                            <i data-lucide="trending-down" class="w-6 h-6 text-red-600"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-sm font-bold text-gray-500 uppercase tracking-wide mb-1">現況總結</h3>
-                            <p class="text-xl font-bold text-gray-900 leading-snug">
-                                本週業績 <span class="text-red-500">下滑 12%</span>，主要原因為 <span
-                                    class="border-b-2 border-red-200 pb-0.5">競品 SK-II 在 Momo
-                                    推出「超級新品日」吸走流量</span>，且我司主力品項庫存不足導致轉化率下降。
-                            </p>
+                                <!-- Logic Explanation -->
+                                <div class="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                                    <p class="text-[10px] font-bold text-gray-400 mb-1 flex items-center gap-1">
+                                        <i data-lucide="info" class="w-3 h-3"></i> 計算邏輯說明
+                                    </p>
+                                    <div class="grid grid-cols-2 gap-2 text-[10px] text-gray-500">
+                                        <div>
+                                            <span class="font-bold text-gray-600 block">對應 EXCEL 欄位:</span>
+                                            <ul class="list-disc pl-3">
+                                                <li>主訂單編號 (MainOrderNumber)</li>
+                                                <li>原始商品SKU (OriginalItemSKU)</li>
+                                                <li>維度 (QTY/NewAmount)</li>
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <span class="font-bold text-gray-600 block">演算公式:</span>
+                                            <ul class="list-disc pl-3">
+                                                <li>共同出現次數：同主訂單中商品 A 與 B 同時出現的次數。</li>
+                                                <li>組合指標：A 與 B 的維度加總。</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Gemini Insight -->
+                            <div
+                                class="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl shadow-inner border border-green-100 p-6">
+                                <div class="flex items-center gap-2 mb-3 text-green-700 font-bold">
+                                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                                    <span>AI 加購策略建議</span>
+                                </div>
+                                <div id="m2-insight"
+                                    class="text-sm text-gray-700 leading-relaxed space-y-3 min-h-[150px]">
+                                    等待分析數據...
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- 2. Evidence & Insights -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Key Data 1 -->
-                        <div class="bg-white p-5 rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
-                            <div class="flex items-center gap-2 mb-3 text-red-600 font-bold">
-                                <i data-lucide="alert-circle" class="w-4 h-4"></i>
-                                <span>流量流失警訊</span>
-                            </div>
-                            <p class="text-sm text-gray-600 leading-relaxed">
-                                Momo 洗衣精類別整體流量成長 15%，但我司品牌頁瀏覽量 <span class="font-bold text-gray-900">逆勢下跌
-                                    8%</span>。數據顯示週三 (1/3) 起，競品活動頁面流量激增。
-                            </p>
-                        </div>
+                    <!-- Module 3: Order Pattern -->
+                    <div id="module-3" class="analysis-module hidden animate-fade-in space-y-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <!-- Data Card -->
+                            <div
+                                class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col items-center">
+                                <h3 class="font-bold text-gray-800 mb-4 self-start flex items-center gap-2">
+                                    <span class="bg-orange-100 text-orange-600 p-1.5 rounded-lg"><i
+                                            data-lucide="shopping-bag" class="w-5 h-5"></i></span>
+                                    單品 vs 多品 訂單分佈
+                                </h3>
+                                <div class="w-full max-w-md h-64">
+                                    <canvas id="m3Chart"></canvas>
+                                </div>
+                                <div id="m3-content" class="w-full mt-4 grid grid-cols-2 gap-4 text-center">
+                                    <!-- Stats inserted here -->
+                                </div>
 
-                        <!-- Key Data 2 -->
-                        <div class="bg-white p-5 rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
-                            <div class="flex items-center gap-2 mb-3 text-orange-600 font-bold">
-                                <i data-lucide="shopping-cart" class="w-4 h-4"></i>
-                                <span>轉化率分析</span>
+                                <!-- Logic Explanation -->
+                                <div class="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                                    <p class="text-[10px] font-bold text-gray-400 mb-1 flex items-center gap-1">
+                                        <i data-lucide="info" class="w-3 h-3"></i> 計算邏輯說明
+                                    </p>
+                                    <div class="grid grid-cols-2 gap-2 text-[10px] text-gray-500">
+                                        <div>
+                                            <span class="font-bold text-gray-600 block">對應 EXCEL 欄位:</span>
+                                            <ul class="list-disc pl-3">
+                                                <li>主訂單編號 (MainOrderNumber)</li>
+                                                <li>數量 (QTY)</li>
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <span class="font-bold text-gray-600 block">演算公式:</span>
+                                            <ul class="list-disc pl-3">
+                                                <li>先統計同一主訂單 (MainOrderNumber) 內的 QTY。</li>
+                                                <li>依該主訂單內的 QTY 總和進行判斷。</li>
+                                                <li>總 QTY <= 1 為「單一品項」。</li>
+                                                <li>總 QTY > 1 為「多品項組合」。</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <p class="text-sm text-gray-600 leading-relaxed">
-                                主力單品「Persil 深層潔淨」缺貨率達 30%，導致加入購物車後 <span class="font-bold text-gray-900">結帳流失率 (Drop-off
-                                    Rate) 攀升至 65%</span> (上週為 42%)。
-                            </p>
-                        </div>
-
-                        <!-- Key Data 3 -->
-                        <div class="bg-white p-5 rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
-                            <div class="flex items-center gap-2 mb-3 text-blue-600 font-bold">
-                                <i data-lucide="search" class="w-4 h-4"></i>
-                                <span>關鍵字競爭</span>
+                            <!-- Gemini Insight -->
+                            <div
+                                class="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl shadow-inner border border-orange-100 p-6">
+                                <div class="flex items-center gap-2 mb-3 text-orange-700 font-bold">
+                                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                                    <span>AI 行為分析觀點</span>
+                                </div>
+                                <div id="m3-insight"
+                                    class="text-sm text-gray-700 leading-relaxed space-y-3 min-h-[150px]">
+                                    等待分析數據...
+                                </div>
                             </div>
-                            <p class="text-sm text-gray-600 leading-relaxed">
-                                關鍵字「除菌洗衣精」的搜尋份額 (Share of Search) <span class="font-bold text-gray-900">被競品侵蝕
-                                    5%</span>，顯示競品在站內廣告投放力度加大。
-                            </p>
-                        </div>
-
-                        <!-- Key Data 4 -->
-                        <div class="bg-white p-5 rounded-xl border border-gray-100 hover:shadow-md transition-shadow">
-                            <div class="flex items-center gap-2 mb-3 text-gray-600 font-bold">
-                                <i data-lucide="users" class="w-4 h-4"></i>
-                                <span>客群洞察</span>
-                            </div>
-                            <p class="text-sm text-gray-600 leading-relaxed">
-                                流失客群主要集中在 <span class="font-bold text-gray-900">25-34
-                                    歲女性</span>，該族群對新品與贈品敏感度高，與競品活動受眾高度重疊。
-                            </p>
                         </div>
                     </div>
 
-                    <!-- 3. Recommendations -->
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                        <div class="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                            <h3 class="font-bold text-gray-800 flex items-center gap-2">
-                                <i data-lucide="briefcase" class="w-5 h-5 text-gray-500"></i> AI 建議行動方案
-                            </h3>
-                            <span class="text-xs font-bold bg-green-100 text-green-700 px-2 py-1 rounded">High
-                                Priority</span>
-                        </div>
-                        <div class="p-6">
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="text-xs text-gray-500 border-b border-gray-100">
-                                        <th class="pb-3 font-medium pl-2">優先級</th>
-                                        <th class="pb-3 font-medium w-1/3">建議行動</th>
-                                        <th class="pb-3 font-medium">預期影響 (Impact)</th>
-                                        <th class="pb-3 font-medium">所需資源</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="text-sm">
-                                    <tr class="border-b border-gray-50 hover:bg-gray-50">
-                                        <td class="py-4 pl-2"><span
-                                                class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded font-bold">P0</span>
-                                        </td>
-                                        <td class="py-4 font-bold text-gray-800">緊急調貨並開啟「到貨通知」</td>
-                                        <td class="py-4 text-green-600">預計挽回 20% 轉化率</td>
-                                        <td class="py-4 text-gray-500">物流部 - 跨倉調撥</td>
-                                    </tr>
-                                    <tr class="border-b border-gray-50 hover:bg-gray-50">
-                                        <td class="py-4 pl-2"><span
-                                                class="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded font-bold">P1</span>
-                                        </td>
-                                        <td class="py-4 font-bold text-gray-800">啟動「滿千折百」快閃優惠</td>
-                                        <td class="py-4 text-green-600">提升客單價 (AOV) 至 $1200</td>
-                                        <td class="py-4 text-gray-500">行銷部 - $50k 預算</td>
-                                    </tr>
-                                    <tr class="hover:bg-gray-50">
-                                        <td class="py-4 pl-2"><span
-                                                class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold">P2</span>
-                                        </td>
-                                        <td class="py-4 font-bold text-gray-800">針對 25-34 歲女性投放 IG 廣告</td>
-                                        <td class="py-4 text-green-600">奪回 5% 品牌聲量</td>
-                                        <td class="py-4 text-gray-500">媒體部 - 素材 AB Test</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="mt-6 flex justify-end">
-                                <button
-                                    class="text-sm font-bold text-hhg-500 hover:text-hhg-700 flex items-center gap-1">
-                                    將建議轉為任務 (To-Do) <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                                </button>
+                    <!-- Module 4: Repurchase -->
+                    <div id="module-4" class="analysis-module hidden animate-fade-in space-y-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <!-- Data Card -->
+                            <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                                <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                    <span class="bg-purple-100 text-purple-600 p-1.5 rounded-lg"><i
+                                            data-lucide="refresh-cw" class="w-5 h-5"></i></span>
+                                    顧客忠誠度概況 (Retention)
+                                </h3>
+                                <div id="m4-content" class="space-y-4">
+                                    <div class="text-sm text-gray-400">請匯入資料並點擊「執行全部分析」...</div>
+                                </div>
+
+                                <!-- Logic Explanation -->
+                                <div class="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                                    <p class="text-[10px] font-bold text-gray-400 mb-1 flex items-center gap-1">
+                                        <i data-lucide="info" class="w-3 h-3"></i> 計算邏輯說明
+                                    </p>
+                                    <div class="grid grid-cols-2 gap-2 text-[10px] text-gray-500">
+                                        <div>
+                                            <span class="font-bold text-gray-600 block">對應 EXCEL 欄位:</span>
+                                            <ul class="list-disc pl-3">
+                                                <li>購買者名稱/ID (BuyerName)</li>
+                                                <li>訂單排名 (OrderRank)</li>
+                                                <li>訂單日期 (OrderDate)</li>
+                                                <li>上次購買日期 (PreviousPurchaseDate)</li>
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <span class="font-bold text-gray-600 block">演算公式:</span>
+                                            <ul class="list-disc pl-3">
+                                                <li>限定通路：僅計算「蝦皮」或「Shopify」。</li>
+                                                <li>回購率：(Rank>=2 的買家數 / 總有效買家數) %</li>
+                                                <li>平均回購天數：(Σ(OrderDate - PrevDate) / 回購買家數)</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Gemini Insight -->
+                            <div
+                                class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl shadow-inner border border-purple-100 p-6">
+                                <div class="flex items-center gap-2 mb-3 text-purple-700 font-bold">
+                                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                                    <span>AI 留存優化建議</span>
+                                </div>
+                                <div id="m4-insight"
+                                    class="text-sm text-gray-700 leading-relaxed space-y-3 min-h-[150px]">
+                                    等待分析數據...
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -3786,6 +3959,140 @@
                                 class="block px-3 py-2 rounded hover:bg-gray-50 text-gray-600 text-sm hover:text-hhg-600 transition-colors">其餘事項簽呈</a>
                         </li>
                     </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6.4 Approval Permission -->
+        <section id="approval-permission" class="page-section hidden animate-fade-in p-6 h-full overflow-y-auto">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-900">各式審核申請單 </h2>
+                <p class="text-sm text-gray-500 mt-1">申請各類系統權限與審核。</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Permission Request Card -->
+                <div
+                    class="group bg-white p-6 rounded-xl border border-gray-100 hover:border-hhg-300 hover:shadow-lg transition-all flex flex-col">
+                    <h4 class="text-lg font-bold text-gray-900">權限申請</h4>
+                    <p class="text-sm text-gray-500 mt-2 mb-4 flex-1">系統權限開通、異動與停用申請流程。</p>
+                    <div class="space-y-2">
+                        <a href="https://www.appsheet.com/start/80846f97-9c5c-479b-8e32-4370bfeef672?platform=desktop&refresh=1#viewStack[0][identifier][Type]=Control&viewStack[0][identifier][Name]=%E5%BE%85%E9%96%8B%E9%80%9A%E5%88%97%E8%A1%A8&viewStack[1][identifier][Type]=Control&viewStack[1][identifier][Name]=%E6%AC%8A%E9%99%90%E7%94%B3%E8%AB%8B%E8%A1%A8%E5%96%AE&viewStack[1][mutableState][isInEditMode]=true&viewStack[1][mutableState][transactionId]=deb00a45-fe59-4c81-8230-6c2e47f468e7&viewStack[1][parentEntriesHidden]=true&appName=%E6%AC%8A%E9%99%90%E7%94%B3%E8%AB%8B%E8%A1%A8%E5%96%AE-487945175-23-11-27"
+                            target="_blank"
+                            class="w-full py-2 bg-white text-gray-500 border border-gray-200 rounded-lg text-sm font-bold hover:text-hhg-600 hover:border-hhg-300 transition-colors flex items-center justify-center gap-2">
+                            <i data-lucide="external-link" class="w-4 h-4"></i> 前往審核系統
+                        </a>
+                        <a href="https://docs.google.com/document/d/14z5s5LuB3metA7ez7HudormU_7mJ2eSE1yMr48H2GB8/edit?tab=t.0"
+                            target="_blank"
+                            class="w-full py-2 bg-white text-gray-500 border border-gray-200 rounded-lg text-sm font-bold hover:text-hhg-600 hover:border-hhg-300 transition-colors flex items-center justify-center gap-2">
+                            <i data-lucide="book-open" class="w-4 h-4"></i> 查看SOP
+                        </a>
+                        <a href="https://notebooklm.google.com/" target="_blank"
+                            class="block w-full py-2 bg-hhg-50 text-hhg-700 border border-hhg-200 rounded-lg text-sm font-medium hover:bg-hhg-100 transition-colors text-center">
+                            <i data-lucide="sparkles" class="w-4 h-4 inline mr-1"></i> Ask AI (NotebookLM)
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Purchase Order Approval Card -->
+                <div
+                    class="group bg-white p-6 rounded-xl border border-gray-100 hover:border-hhg-300 hover:shadow-lg transition-all flex flex-col">
+                    <h4 class="text-lg font-bold text-gray-900">採購單審核</h4>
+                    <p class="text-sm text-gray-500 mt-2 mb-4 flex-1">採購單申請與審核流程。</p>
+                    <div class="space-y-2">
+                        <a href="https://www.appsheet.com/start/197cbf3c-dc43-48f7-8820-1ec6b0d20734?platform=desktop&refresh=1#appName=u63a1u8cfcu5be9u6838-374471067&vss=H4sIAAAAAAAAA62PsUoDQRCG32XqPYgmbHLXikUI2kTSuBbj7SwsXnbD7VxMOPYJBCuxtxZs0vo6ah7DzUURLEPK_4fvn29aWFq6nzKWd1Bct39pQmsooFVwtV6QgkLBmXdc-0qBUHCJ8335-fiy3bx_PL99PW22rw8KIsQb8TvDFKBoD1pJmNXk2BpL9S7tFpLRDw-io1Pxj4UojvGEgHnDeFtR90VnE8buXFu-8DplrhsSwDW6gCVb78Y6XSKZnxocmEyWQ8oGucYslyiznhz1zajXH5I5gRiTovFlE0jPkunBhp3RaoFO750MVoHiN77r9jzSAQAA&view=%E6%8E%A1%E8%B3%BC%E5%96%AE%E7%94%B3%E8%AB%8B"
+                            target="_blank"
+                            class="w-full py-2 bg-white text-gray-500 border border-gray-200 rounded-lg text-sm font-bold hover:text-hhg-600 hover:border-hhg-300 transition-colors flex items-center justify-center gap-2">
+                            <i data-lucide="external-link" class="w-4 h-4"></i> 前往審核系統
+                        </a>
+                        <a href="https://docs.google.com/presentation/d/12uv6boJKFEFesGrBdHb1GQ8CjrvSAmIThj1oWwYEiCc/edit?slide=id.p#slide=id.p"
+                            target="_blank"
+                            class="w-full py-2 bg-white text-gray-500 border border-gray-200 rounded-lg text-sm font-bold hover:text-hhg-600 hover:border-hhg-300 transition-colors flex items-center justify-center gap-2">
+                            <i data-lucide="book-open" class="w-4 h-4"></i> 查看SOP
+                        </a>
+                        <a href="https://notebooklm.google.com/" target="_blank"
+                            class="block w-full py-2 bg-hhg-50 text-hhg-700 border border-hhg-200 rounded-lg text-sm font-medium hover:bg-hhg-100 transition-colors text-center">
+                            <i data-lucide="sparkles" class="w-4 h-4 inline mr-1"></i> Ask AI (NotebookLM)
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Inventory Adjustment Request Card -->
+                <div
+                    class="group bg-white p-6 rounded-xl border border-gray-100 hover:border-hhg-300 hover:shadow-lg transition-all flex flex-col">
+                    <h4 class="text-lg font-bold text-gray-900">庫存調整申請</h4>
+                    <p class="text-sm text-gray-500 mt-2 mb-4 flex-1">庫存數量異動與盤點調整申請。</p>
+                    <div class="space-y-2">
+                        <a href="https://www.appsheet.com/start/dc3b7daf-d650-4438-8e4b-92b45b51230e?platform=desktop&refresh=1#appName=%E5%BA%AB%E5%AD%98%E8%AA%BF%E6%95%B4%E7%94%B3%E8%AB%8B-374471067&vss=H4sIAAAAAAAAA62PsU7DMBRF_-XNjhTSBpGsiKFCdCliwQwv8bNkNbWr2AGqyF_ACohvoIIFJha-JrSfUTcFsbCV8V7pnXduC9eKbiYOyynkl-1vOqUF5NByOF_MiUPO4dhoV5uKA-Mwxtmu7D6W3cvT-vnz6-F9df-2Xt51j68cPPgr9gNzZCFv92CFYyVIOyUV1du05QS7bwqwnhGKPwng2f_NYjBrHBYV9bt6MzvSJ0K5MyNCdnVDDFyN2mLplNEjEf4dyCLFMkkjkcRH0TAukijDw0E0xFgmmIpBRhl4H0SlKRtL4iL47unZe93OUYudmcTKkt8AJgpW6vABAAA=&view=%E5%BA%AB%E5%AD%98%E8%AA%BF%E6%95%B4%E7%94%B3%E8%AB%8B%E5%96%AE"
+                            target="_blank"
+                            class="w-full py-2 bg-white text-gray-500 border border-gray-200 rounded-lg text-sm font-bold hover:text-hhg-600 hover:border-hhg-300 transition-colors flex items-center justify-center gap-2">
+                            <i data-lucide="external-link" class="w-4 h-4"></i> 前往審核系統
+                        </a>
+                        <a href="https://docs.google.com/presentation/d/1ZkA2SIY5lDtD3sOebIF0_p8nWBHwccn82BOcAvZXqAQ/edit#slide=id.p1"
+                            target="_blank"
+                            class="w-full py-2 bg-white text-gray-500 border border-gray-200 rounded-lg text-sm font-bold hover:text-hhg-600 hover:border-hhg-300 transition-colors flex items-center justify-center gap-2">
+                            <i data-lucide="book-open" class="w-4 h-4"></i> 查看SOP
+                        </a>
+                        <a href="https://notebooklm.google.com/" target="_blank"
+                            class="block w-full py-2 bg-hhg-50 text-hhg-700 border border-hhg-200 rounded-lg text-sm font-medium hover:bg-hhg-100 transition-colors text-center">
+                            <i data-lucide="sparkles" class="w-4 h-4 inline mr-1"></i> Ask AI (NotebookLM)
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Customer and Supplier Data Entry Card -->
+                <div
+                    class="group bg-white p-6 rounded-xl border border-gray-100 hover:border-hhg-300 hover:shadow-lg transition-all flex flex-col">
+                    <h4 class="text-lg font-bold text-gray-900">客戶及供應商資料建檔</h4>
+                    <p class="text-sm text-gray-500 mt-2 mb-4 flex-1">建立或更新客戶與供應商的基本資料。</p>
+                    <div class="space-y-2">
+                        <a href="https://www.appsheet.com/start/e459cdcb-fdc3-4a0b-8e98-75c61160692d?platform=desktop&refresh=1#appName=%E5%AA%92%E9%AB%94%E9%83%A8%E8%AB%8B%E6%AC%BE-487945175&vss=H4sIAAAAAAAAA6tWKstMLQ8uSUzOVrKKrkbwvFMrlayUqmOUQioLUmOUrGKUnPPzSoryc2KUdGKU_BJzIYJP1y161rHtxeb2Z9NmPlvW9GLZ3hilWqXaWB2YSSWpxUpW1eQaBNSZmZKaV5KZlplaBOKBDAG6C2qEkg7YAKAApnalWh0q-UZHKbe0JDEpJxXsHaAramuBZqflJ5cWp6aEAa2gxOjMYs8814qCxLwU3_wUoOFpiTnFqbUAkz2HZ5cBAAA=&view=%E5%AE%A2%E6%88%B6%E8%B3%87%E6%96%99%E6%A6%82%E8%A6%BD"
+                            target="_blank"
+                            class="w-full py-2 bg-white text-gray-500 border border-gray-200 rounded-lg text-sm font-bold hover:text-hhg-600 hover:border-hhg-300 transition-colors flex items-center justify-center gap-2">
+                            <i data-lucide="external-link" class="w-4 h-4"></i> 前往審核系統
+                        </a>
+                        <a href="https://docs.google.com/presentation/d/1JO6E-1fhlIEf7AMhcYbFmpgvSuRdXoLpaVleSAO7_6w/edit?slide=id.g2d0e123cca5_0_20#slide=id.g2d0e123cca5_0_20"
+                            target="_blank"
+                            class="w-full py-2 bg-white text-gray-500 border border-gray-200 rounded-lg text-sm font-bold hover:text-hhg-600 hover:border-hhg-300 transition-colors flex items-center justify-center gap-2">
+                            <i data-lucide="book-open" class="w-4 h-4"></i> 查看SOP
+                        </a>
+                        <a href="https://notebooklm.google.com/" target="_blank"
+                            class="block w-full py-2 bg-hhg-50 text-hhg-700 border border-hhg-200 rounded-lg text-sm font-medium hover:bg-hhg-100 transition-colors text-center">
+                            <i data-lucide="sparkles" class="w-4 h-4 inline mr-1"></i> Ask AI (NotebookLM)
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6.5 Internal Systems -->
+        <section id="approval-internal-systems" class="page-section hidden animate-fade-in p-6 h-full overflow-y-auto">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-900">內部系統 (Internal Systems)</h2>
+                <p class="text-sm text-gray-500 mt-1">存取公司內部管理系統。</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Ken's System Card -->
+                <div
+                    class="group bg-white p-6 rounded-xl border border-gray-100 hover:border-hhg-300 hover:shadow-lg transition-all flex flex-col">
+                    <h4 class="text-lg font-bold text-gray-900">Ken哥系統 (商品管理系統/Cosmos)</h4>
+                    <p class="text-sm text-gray-500 mt-2 mb-4 flex-1">商品資料管理與維護系統。</p>
+                    <div class="space-y-2">
+                        <a href="https://cosmos.hhgalaxy.com.tw/HHGWebSys/page/Default.aspx" target="_blank"
+                            class="w-full py-2 bg-white text-gray-500 border border-gray-200 rounded-lg text-sm font-bold hover:text-hhg-600 hover:border-hhg-300 transition-colors flex items-center justify-center gap-2">
+                            <i data-lucide="external-link" class="w-4 h-4"></i> 前往內部系統
+                        </a>
+                        <a href="https://docs.google.com/document/d/10fF0U2cZyrj0vG8lU1nS8L__ySh5BPGc5OuZj5aFAf4/edit?tab=t.0#heading=h.ilzlcz4livve"
+                            target="_blank"
+                            class="w-full py-2 bg-white text-gray-500 border border-gray-200 rounded-lg text-sm font-bold hover:text-hhg-600 hover:border-hhg-300 transition-colors flex items-center justify-center gap-2">
+                            <i data-lucide="book-open" class="w-4 h-4"></i> 查看SOP
+                        </a>
+                        <a href="https://notebooklm.google.com/" target="_blank"
+                            class="block w-full py-2 bg-hhg-50 text-hhg-700 border border-hhg-200 rounded-lg text-sm font-medium hover:bg-hhg-100 transition-colors text-center">
+                            <i data-lucide="sparkles" class="w-4 h-4 inline mr-1"></i> Ask AI(NotebookLM)
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>
