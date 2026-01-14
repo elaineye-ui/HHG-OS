@@ -77,6 +77,38 @@
         <!-- Navigation Menu -->
         <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1 custom-scrollbar">
 
+
+            <!-- 0. AI Competition Description -->
+            <div>
+                <button onclick="toggleMenu('menu-ai-competition', this)"
+                    class="w-full flex items-center justify-between p-2 text-yellow-600 hover:bg-yellow-50 rounded-lg group transition-colors duration-200 mb-1">
+                    <div class="flex items-center space-x-3">
+                        <div class="bg-yellow-100 p-1.5 rounded-md group-hover:bg-yellow-200 transition-colors">
+                            <i data-lucide="trophy" class="w-5 h-5 text-yellow-600"></i>
+                        </div>
+                        <span class="truncate font-semibold">AI競賽說明</span>
+                    </div>
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-yellow-400 submenu-arrow rotate-180"></i>
+                </button>
+                <ul id="menu-ai-competition" class="pl-11 mt-1 space-y-1">
+                    <li><a href="#" onclick="switchPage('ai-competition-pain-points', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-yellow-600 rounded-md px-2 hover:bg-yellow-50">
+                            解決痛點：資訊孤島
+                        </a>
+                    </li>
+                    <li><a href="#" onclick="switchPage('ai-competition-efficiency', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-yellow-600 rounded-md px-2 hover:bg-yellow-50">
+                            節省工時：效率革命
+                        </a>
+                    </li>
+                    <li><a href="#" onclick="switchPage('ai-competition-antigravity', this)"
+                            class="nav-item block py-1.5 text-sm text-gray-500 hover:text-yellow-600 rounded-md px-2 hover:bg-yellow-50">
+                            Antigravity 工具
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
             <!-- 1. Dashboard -->
             <div>
                 <button onclick="toggleMenu('menu-dashboard', this)"
@@ -463,9 +495,359 @@
         <!-- Scrollable Page Content -->
         <div id="contentArea" class="flex-1 overflow-y-auto p-6 bg-gray-50 custom-scrollbar">
 
+            <!-- 0. AI Competition Description Pages -->
+            <!-- Page 1: Pain Points -->
+            <section id="ai-competition-pain-points" class="page-section space-y-8 animate-fade-in">
+                <!-- Header -->
+                <div
+                    class="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-2xl p-8 text-white shadow-lg relative overflow-hidden">
+                    <div class="relative z-10">
+                        <h2 class="text-3xl font-bold mb-2">解決痛點：從「資訊孤島」到「企業大腦」</h2>
+                        <p class="text-yellow-100 text-lg">透過 Antigravity 打造企業專屬的操作系統，打破部門藩籬，讓知識流動。</p>
+                    </div>
+                    <i data-lucide="island" class="absolute right-4 bottom-4 w-32 h-32 text-white/10"></i>
+                </div>
+
+                <!-- 1. Pain Points Visual -->
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Before -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative group">
+                        <div
+                            class="absolute top-4 right-4 bg-gray-100 text-gray-500 px-3 py-1 rounded-full text-sm font-bold">
+                            Before</div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">傳統企業資訊分散</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
+                                <i data-lucide="file-x" class="w-6 h-6 text-gray-400 mt-1"></i>
+                                <div>
+                                    <h4 class="font-bold text-gray-700">資訊孤島</h4>
+                                    <p class="text-sm text-gray-500">各部門資料散落在不同電腦、Line群組、紙本文件，無法共享。</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
+                                <i data-lucide="search-x" class="w-6 h-6 text-gray-400 mt-1"></i>
+                                <div>
+                                    <h4 class="font-bold text-gray-700">搜尋困難</h4>
+                                    <p class="text-sm text-gray-500">新人找不到 SOP，老員工找不到去年的活動數據，重複造輪子。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 border-t border-gray-100 pt-4 overflow-hidden rounded-lg group cursor-pointer">
+                            <img src="assets/ai-competition/traditional_data_silos.jpg" alt="Traditional Data Silos"
+                                class="w-full shadow-sm transition-transform duration-700 ease-in-out group-hover:scale-105">
+                        </div>
+                    </div>
+
+                    <!-- After -->
+                    <div
+                        class="bg-white p-6 rounded-2xl shadow-sm border border-yellow-100 ring-4 ring-yellow-50 relative overflow-hidden">
+                        <div
+                            class="absolute top-4 right-4 bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-bold">
+                            After</div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">Antigravity 企業大腦</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-start gap-4 p-4 bg-yellow-50 rounded-xl border border-yellow-100">
+                                <i data-lucide="database" class="w-6 h-6 text-yellow-600 mt-1"></i>
+                                <div>
+                                    <h4 class="font-bold text-gray-900">統一知識庫</h4>
+                                    <p class="text-sm text-gray-600">所有 SOP、SOP、活動數據集中管理，權限分級，一鍵查詢。</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4 p-4 bg-yellow-50 rounded-xl border border-yellow-100">
+                                <i data-lucide="bot" class="w-6 h-6 text-yellow-600 mt-1"></i>
+                                <div>
+                                    <h4 class="font-bold text-gray-900">AI 智能助手</h4>
+                                    <p class="text-sm text-gray-600">連接知識庫，直接問「去年雙11賣最好的商品是什麼？」，秒回解答。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 border-t border-yellow-100 pt-4 text-center">
+                            <p class="text-4xl font-bold text-yellow-600 mb-2">3 天</p>
+                            <p class="text-sm text-gray-500 mb-4">新人上手時間 (原 2-3 週)</p>
+                            <div class="overflow-hidden rounded-lg group cursor-pointer border border-yellow-100">
+                                <img src="assets/ai-competition/sop_before_after.png" alt="Unified Knowledge Base"
+                                    class="w-full shadow-sm transition-transform duration-700 ease-in-out group-hover:scale-105">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Real Scenarios -->
+                <div class="space-y-6">
+                    <h3 class="text-2xl font-bold text-gray-800">實際場景帶來的改變</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <!-- Scenario 1 -->
+                        <div
+                            class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                            <div
+                                class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4 text-blue-600">
+                                <i data-lucide="users"></i>
+                            </div>
+                            <h4 class="text-lg font-bold text-gray-800 mb-2">新人入職場景</h4>
+                            <ul class="space-y-2 text-gray-600 text-sm">
+                                <li class="flex items-center gap-2"><i data-lucide="x" class="w-4 h-4 text-red-500"></i>
+                                    <span class="line-through">主管花 2 週手把手教學</span>
+                                </li>
+                                <li class="flex items-center gap-2"><i data-lucide="x" class="w-4 h-4 text-red-500"></i>
+                                    <span class="line-through">翻閱 215 份散落的 SOP 文件</span>
+                                </li>
+                                <li class="flex items-center gap-2 mt-2"><i data-lucide="check"
+                                        class="w-4 h-4 text-green-500"></i> <span class="font-bold text-gray-800">直接問 AI
+                                        Bot：「我要怎麼申請差旅費？」</span></li>
+                                <li class="flex items-center gap-2"><i data-lucide="check"
+                                        class="w-4 h-4 text-green-500"></i> <span class="font-bold text-gray-800">AI
+                                        附上準確的 Notion 連結與步驟摘要</span></li>
+                            </ul>
+                        </div>
+                        <!-- Scenario 2 -->
+                        <div
+                            class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                            <div
+                                class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4 text-green-600">
+                                <i data-lucide="trending-up"></i>
+                            </div>
+                            <h4 class="text-lg font-bold text-gray-800 mb-2">業務查價場景</h4>
+                            <ul class="space-y-2 text-gray-600 text-sm">
+                                <li class="flex items-center gap-2"><i data-lucide="x" class="w-4 h-4 text-red-500"></i>
+                                    <span class="line-through">開 5 個網頁查競品價格 (Momo, Shopee...)</span>
+                                </li>
+                                <li class="flex items-center gap-2"><i data-lucide="x" class="w-4 h-4 text-red-500"></i>
+                                    <span class="line-through">人工截圖貼到 Excel 做比較</span>
+                                </li>
+                                <li class="flex items-center gap-2 mt-2"><i data-lucide="check"
+                                        class="w-4 h-4 text-green-500"></i> <span
+                                        class="font-bold text-gray-800">一鍵點擊「AI 競品分析」</span></li>
+                                <li class="flex items-center gap-2"><i data-lucide="check"
+                                        class="w-4 h-4 text-green-500"></i> <span class="font-bold text-gray-800">Gemini
+                                        Vision 自動辨識價格並產出比價表</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Page 2: Efficiency Data -->
+            <section id="ai-competition-efficiency" class="page-section hidden space-y-8 animate-fade-in">
+                <!-- Header -->
+                <div
+                    class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-white shadow-lg relative overflow-hidden">
+                    <div class="relative z-10">
+                        <h2 class="text-3xl font-bold mb-2">節省工時：數據驅動的效率革命</h2>
+                        <p class="text-blue-100 text-lg">透過自動化與 AI 賦能，釋放員工潛力，專注於更有價值的決策。</p>
+                    </div>
+                    <i data-lucide="zap" class="absolute right-4 bottom-4 w-32 h-32 text-white/10"></i>
+                </div>
+
+                <!-- 1. 13 Modules Grid Highlight -->
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">全功能 13 大模組</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                        <!-- Just visuals for the 13 modules concept -->
+                        <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-100 text-center"><i
+                                data-lucide="bar-chart-3" class="w-6 h-6 mx-auto mb-2 text-blue-500"></i><span
+                                class="text-xs font-bold">業績分析</span></div>
+                        <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-100 text-center"><i
+                                data-lucide="search" class="w-6 h-6 mx-auto mb-2 text-red-500"></i><span
+                                class="text-xs font-bold">競品追蹤</span></div>
+                        <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-100 text-center"><i
+                                data-lucide="shopping-bag" class="w-6 h-6 mx-auto mb-2 text-orange-500"></i><span
+                                class="text-xs font-bold">電商中心</span></div>
+                        <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-100 text-center"><i
+                                data-lucide="pen-tool" class="w-6 h-6 mx-auto mb-2 text-purple-500"></i><span
+                                class="text-xs font-bold">AI 文案</span></div>
+                        <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-100 text-center"><i
+                                data-lucide="calendar" class="w-6 h-6 mx-auto mb-2 text-green-500"></i><span
+                                class="text-xs font-bold">活動行事曆</span></div>
+                        <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-100 text-center"><i
+                                data-lucide="database" class="w-6 h-6 mx-auto mb-2 text-gray-500"></i><span
+                                class="text-xs font-bold">知識庫</span></div>
+                        <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-100 text-center"><i
+                                data-lucide="file-text" class="w-6 h-6 mx-auto mb-2 text-yellow-500"></i><span
+                                class="text-xs font-bold">文件倉庫</span></div>
+                        <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-100 text-center"><i
+                                data-lucide="check-square" class="w-6 h-6 mx-auto mb-2 text-teal-500"></i><span
+                                class="text-xs font-bold">工作管理</span></div>
+                        <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-100 text-center"><i
+                                data-lucide="truck" class="w-6 h-6 mx-auto mb-2 text-indigo-500"></i><span
+                                class="text-xs font-bold">物流監控</span></div>
+                        <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-100 text-center"><i
+                                data-lucide="palette" class="w-6 h-6 mx-auto mb-2 text-pink-500"></i><span
+                                class="text-xs font-bold">設計需求</span></div>
+                        <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-100 text-center"><i
+                                data-lucide="settings" class="w-6 h-6 mx-auto mb-2 text-slate-500"></i><span
+                                class="text-xs font-bold">系統設定</span></div>
+                        <div
+                            class="bg-white p-3 rounded-lg shadow-sm border border-gray-100 text-center col-span-1 md:col-span-2 lg:col-span-1 bg-gradient-to-r from-hhg-50 to-hhg-100">
+                            <i data-lucide="sparkles" class="w-6 h-6 mx-auto mb-2 text-hhg-600"></i><span
+                                class="text-xs font-bold">Gemini 洞察</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Analysis Center Details -->
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <!-- BigQuery Architecture -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i data-lucide="database" class="text-blue-600"></i>
+                            統一報表中心 (Big Query)
+                        </h3>
+                        <p class="text-gray-600 mb-4">整合各平台 (Momo, Shopee, Yahoo) 數據到 BigQuery，解決數據破碎化問題。</p>
+                        <div class="overflow-hidden rounded-lg mb-4 group cursor-pointer border border-gray-100">
+                            <img src="assets/ai-competition/report_center_dashboard.png" alt="BigQuery Architecture"
+                                class="w-full transition-transform duration-700 ease-in-out group-hover:scale-105">
+                        </div>
+                        <ul class="text-sm space-y-2 text-gray-500">
+                            <li class="flex items-center gap-2"><i data-lucide="check-circle-2"
+                                    class="w-4 h-4 text-green-500"></i> 整合多來源數據 API</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check-circle-2"
+                                    class="w-4 h-4 text-green-500"></i> 自動化清洗 ETL</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check-circle-2"
+                                    class="w-4 h-4 text-green-500"></i> 即時視覺化儀表板</li>
+                        </ul>
+                    </div>
+
+                    <!-- Gemini Insights -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i data-lucide="sparkles" class="text-purple-600"></i>
+                            Gemini 商業洞察
+                        </h3>
+                        <p class="text-gray-600 mb-4">不僅看見數據，更看見機會。AI 自動分析趨勢並提出行動建議。</p>
+                        <div class="overflow-hidden rounded-lg mb-4 group cursor-pointer border border-gray-100">
+                            <img src="assets/ai-competition/gemini_analysis_ui.png" alt="Gemini Insights Flow"
+                                class="w-full transition-transform duration-700 ease-in-out group-hover:scale-105">
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-xl border border-purple-100">
+                            <p class="text-xs font-bold text-purple-600 uppercase mb-2">AI Generated Insight Example</p>
+                            <p class="text-sm text-gray-800 italic">"本月 Persil 銷售成長 12%，主要受惠於雙11檔期組合。建議下週針對流失客群推送 Pril
+                                加購優惠，預計提升 AOV 5%。"</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Efficiency Stats -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6 text-center">量化效益展示</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="text-center p-4">
+                            <div class="text-4xl font-extrabold text-blue-600 mb-2">85%</div>
+                            <p class="font-bold text-gray-800">報表製作時間減少</p>
+                            <p class="text-sm text-gray-500 mt-1">每週一從 4hr → 30min</p>
+                        </div>
+                        <div class="text-center p-4 border-l border-r border-gray-100">
+                            <div class="text-4xl font-extrabold text-green-600 mb-2">99%</div>
+                            <p class="font-bold text-gray-800">價格監控準確率</p>
+                            <p class="text-sm text-gray-500 mt-1">消除人為輸入錯誤</p>
+                        </div>
+                        <div class="text-center p-4">
+                            <div class="text-4xl font-extrabold text-purple-600 mb-2">10x</div>
+                            <p class="font-bold text-gray-800">決策速度提升</p>
+                            <p class="text-sm text-gray-500 mt-1">即時數據 vs 延遲週報</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Page 3: Antigravity Tools -->
+            <section id="ai-competition-antigravity" class="page-section hidden space-y-8 animate-fade-in">
+                <!-- Header -->
+                <div
+                    class="bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl p-8 text-white shadow-lg relative overflow-hidden">
+                    <div class="relative z-10">
+                        <h2 class="text-3xl font-bold mb-2">Antigravity 工具：Vibe Coding 實戰</h2>
+                        <p class="text-gray-300 text-lg">不只是軟體，而是由 AI 驅動的全新開發範式。</p>
+                    </div>
+                    <i data-lucide="code-2" class="absolute right-4 bottom-4 w-32 h-32 text-white/10"></i>
+                </div>
+
+                <!-- 1. Vibe Coding Flow -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">Vibe Coding 開發流程</h3>
+                    <div
+                        class="rounded-xl overflow-hidden mb-6 group cursor-pointer border border-gray-100 shadow-sm w-[70%] mx-auto">
+                        <img src="assets/ai-competition/antigravity_vibe_flow_v2.jpg" alt="Vibe Coding Flow"
+                            class="w-full h-auto object-cover transition-transform duration-700 ease-in-out group-hover:scale-105">
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-6 text-center">
+                        <div>
+                            <div
+                                class="w-10 h-10 bg-gray-900 text-white rounded-full flex items-center justify-center mx-auto mb-3 font-bold">
+                                1</div>
+                            <h4 class="font-bold text-gray-800">計畫確認</h4>
+                            <p class="text-sm text-gray-500 mt-1">用自然語言描述需求，AI 轉化為執行計畫</p>
+                        </div>
+                        <div>
+                            <div
+                                class="w-10 h-10 bg-gray-900 text-white rounded-full flex items-center justify-center mx-auto mb-3 font-bold">
+                                2</div>
+                            <h4 class="font-bold text-gray-800">視覺對齊</h4>
+                            <p class="text-sm text-gray-500 mt-1">確認 Mockup 與設計風格，所見即所得</p>
+                        </div>
+                        <div>
+                            <div
+                                class="w-10 h-10 bg-gray-900 text-white rounded-full flex items-center justify-center mx-auto mb-3 font-bold">
+                                3</div>
+                            <h4 class="font-bold text-gray-800">自動上線</h4>
+                            <p class="text-sm text-gray-500 mt-1">AI 撰寫代碼、修正錯誤，快速部署</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Case Studies (Screenshots) -->
+                <div class="space-y-8">
+                    <h3 class="text-2xl font-bold text-gray-800 border-l-4 border-hhg-500 pl-4">實際開發案例 Showcase</h3>
+
+                    <!-- Case 1: Knowledge Base -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-lg font-bold text-gray-800">Case 1: 知識庫入口卡片</h4>
+                            <span
+                                class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">已上線</span>
+                        </div>
+                        <p class="text-gray-600 mb-6">需求：新增平台知識庫 MOMO 卡片，包含 SOP 連結與 AI 查詢按鈕。</p>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <img src="assets/ai-competition/platform_kb_section_1767779212305.png"
+                                class="rounded-lg shadow-sm border border-gray-100 hover:scale-105 transition-transform cursor-pointer">
+                            <img src="assets/ai-competition/department_knowledge_base_cards_1767764351346.png"
+                                class="rounded-lg shadow-sm border border-gray-100 hover:scale-105 transition-transform cursor-pointer">
+                        </div>
+                    </div>
+
+                    <!-- Case 2: Competitor Analysis -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-lg font-bold text-gray-800">Case 2: AI 競品分析功能</h4>
+                            <span
+                                class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">已上線</span>
+                        </div>
+                        <p class="text-gray-600 mb-6">需求：使用 Gemini Vision 自動分析競品活動圖片，擷取價格與促銷機制。</p>
+                        <div class="overflow-hidden rounded-lg shadow-sm border border-gray-100">
+                            <img src="assets/ai-competition/competitor_campaigns_ai_analysis_1767731442944.png"
+                                class="w-full hover:scale-105 transition-transform cursor-pointer">
+                        </div>
+                    </div>
+
+                    <!-- Case 3: Ecommerce Refactor -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-lg font-bold text-gray-800">Case 3: 電商中心落地</h4>
+                            <span
+                                class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">已上線</span>
+                        </div>
+                        <p class="text-gray-600 mb-6">需求：完整模組建置，包含庫存監控、迴轉天數計算與視覺化警示。</p>
+                        <div class="overflow-hidden rounded-lg shadow-sm border border-gray-100">
+                            <img src="assets/ai-competition/after_refactor_ecommerce_1767723498039.png"
+                                class="w-full hover:scale-105 transition-transform cursor-pointer">
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
             <!-- 1. Dashboard (Default) -->
             <!-- 1. Dashboard Overview -->
-            <section id="dashboard-overview" class="page-section space-y-6 animate-fade-in">
+            <section id="dashboard-overview" class="page-section hidden space-y-6 animate-fade-in">
 
                 <!-- Advanced Filters Bar -->
                 <div
